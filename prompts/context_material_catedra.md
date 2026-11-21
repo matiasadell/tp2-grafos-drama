@@ -1,0 +1,5 @@
+# Context — Material de la cátedra
+
+- **Unidad V** (`context/Unidad V/Unidad_V.pdf`, `Unidad_V_Prácticas.pdf`, `seed_social_gds.cypher`): proyección GDS, WCC/SCC, centralidad (grado, PageRank, betweenness, closeness), Jaccard/node similarity, label propagation, KNN. Es la referencia de sintaxis y estilo para el **Ej. 1**.
+- **Unidad VI** (`context/Unidad VI/Unidad_VI.pdf`, `Unidad_VI_Práctica.pdf`): `CALL { … } IN TRANSACTIONS`, índices range y PROFILE/EXPLAIN (NodeByLabelScan + Filter frente a NodeIndexSeek). Es la referencia del **Ej. 2**. En la app Query, `CALL … IN TRANSACTIONS` corre sin `:auto`; ese prefijo es solo de Browser.
+- **Unidad VII** (`context/Unidad VII/Unidad_VII.pdf`, `Unidad_VII_Practica_Neo4j_GDS.pdf`, `Unidad_VII_Guia de la Practica.pdf`, `Unidad_VII_Practica_Python.ipynb`): node2vec/FastRP, pipelines de clasificación y de link prediction (Hadamard, AUCPR), bloques que arrancan con `drop` para poder reejecutarse, y PyKEEN (`pipeline(..., random_seed=42)`, `predict_target`) con el driver `neo4j`. Es la referencia del **Ej. 3**.

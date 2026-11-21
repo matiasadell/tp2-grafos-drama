@@ -1,0 +1,23 @@
+# Credenciales (nunca a git ni al zip)
+.env
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Artefactos pesados o regenerables
+outputs/kg/modelo/
+outputs/entrega/*.zip
+outputs/informe/*.pdf
+*.bak*
+
+# Andamiaje temporal de project_planner
+QUESTIONS.md
+PROMPT.md
+
+# Config local de Claude Code
+.claude/settings.local.json
+
+# Dataset (se descarga de github.com/neo4j-graph-examples/recommendations)
+*.dump

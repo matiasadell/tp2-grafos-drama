@@ -1,0 +1,39 @@
+# Plan: [Project Name]
+
+## Problem & goal
+
+What this solves, and what "done" looks like for this project.
+
+## Key decisions
+
+Technical decisions worth calling out explicitly, one line each.
+
+# Phase 1 — [phase name]
+
+## Task 1 — [short task title]
+**Prompts:** [relevant prompts/{section}.md files for this task]
+**Context:** [relevant context/ files for this task, or `none`]
+**Objective:** [one-line summary]
+**Description:** [fuller context — approach, edge cases, anything non-obvious]
+**Outputs:** [every filesystem change this task makes — created, modified, appended to, or deleted files/folders. Never empty: analysis-only tasks still write a status/findings file. See references/plan_structure.md]
+**Definition of done:** [how to confirm this task actually worked — a check on the Outputs, or a behavioral check (run tests, hit an endpoint, execute a script). Doesn't need its own file; report a short pass/fail summary once checked. See references/plan_structure.md]
+
+## Task 2 — [short task title]
+**Prompts:** ...
+**Context:** ...
+**Objective:** ...
+**Description:** ...
+**Outputs:** ...
+**Definition of done:** ...
+
+# Phase 2 — [phase name]
+
+## Task 3 — [short task title]
+**Prompts:** ...
+**Context:** ...
+**Objective:** ...
+**Description:** ...
+**Outputs:** ...
+**Definition of done:** ...
+
+(repeat — one `#` phase per major chunk of work, one `##` task per materialized step inside it)

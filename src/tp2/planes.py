@@ -86,8 +86,8 @@ def tabla_texto(plan: Plan, titulo: str = "") -> str:
     for prof, nodo in recorrer(plan):
         a = _args(nodo)
         detalles = str(a.get("Details", "")).replace("\n", " ")
-        if len(detalles) > 70:
-            detalles = detalles[:67] + "..."
+        if len(detalles) > 52:  # acotado para que la imagen se lea en el ancho de una página
+            detalles = detalles[:49] + "..."
         tiempo = nodo.get("time")
         filas.append([
             ("| " * prof) + "+" + limpiar_operador(nodo.get("operatorType", "?")),
@@ -141,6 +141,24 @@ def guardar_render(plan: Plan, destino_sin_ext: Path, titulo: str) -> None:
     lineas = texto.splitlines()
     ancho = max(len(l) for l in lineas)
     fig = plt.figure(figsize=(max(6.0, ancho * 0.062), max(1.2, len(lineas) * 0.19 + 0.3)), dpi=150)
-    fig.text(0.01, 0.98, texto, family="monospace", fontsize=7.5, va="top", ha="left")
+    # parse_math=False: los parámetros de Cypher ($autoint_0) no son fórmulas de mathtext
+    fig.text(0.01, 0.98, texto, family="monospace", fontsize=7.5, va="top", ha="left", parse_math=False)
     fig.savefig(png, bbox_inches="tight", facecolor="white")
     plt.close(fig)
+
+
+if __name__ == "__main__":
+    # Re-renderiza los planes guardados sin volver a ejecutar las consultas:
+    #   python -m src.tp2.planes outputs/resultados/02_ejercicio2 [destino=outputs/planes]
+    import json
+    import sys
+
+    from .conexion import RAIZ
+
+    carpeta = Path(sys.argv[1])
+    destino = Path(sys.argv[2]) if len(sys.argv) > 2 else RAIZ / "outputs" / "planes"
+    for f in sorted(carpeta.glob("*.json")):
+        info = json.loads(f.read_text(encoding="utf-8"))
+        if info.get("plan"):
+            guardar_render(info["plan"], destino / info["id"], f"{info['id']} ({info['plan_tipo']})")
+            print("render:", info["id"])

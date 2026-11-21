@@ -1,19 +1,19 @@
 2.3c_explain_escritura_2_4 (EXPLAIN)
 Runtime: PIPELINED (PIPELINED) | Planner: COST | Operador inicial: NodeByLabelScan | Eager: no
-+-----------------------------+---------------------------------------------------------+------------+-------+---------+----------------+-------------+
-| Operador                    | Detalles                                                | Filas est. | Filas | DB hits | Page cache h/m | Tiempo (ms) |
-+-----------------------------+---------------------------------------------------------+------------+-------+---------+----------------+-------------+
-| +ProduceResults             |                                                         | 671,0      |       |         |                |             |
-| | +EmptyResult              |                                                         | 671,0      |       |         |                |             |
-| | | +TransactionForeach     | IN TRANSACTIONS OF $autoint_0 ROWS ON ERROR FAIL        | 671,0      |       |         |                |             |
-| | | | +NodeByLabelScan      | u:User                                                  | 671,0      |       |         |                |             |
-| | | | +SetProperty          | r.ratingNorm = r.rating - promedio                      | 6.710,0    |       |         |                |             |
-| | | | | +Unwind             | calificaciones AS r                                     | 6.710,0    |       |         |                |             |
-| | | | | | +EagerAggregation | collect(r) AS calificaciones, avg(r.rating) AS promedio | 671,0      |       |         |                |             |
-| | | | | | | +Filter         | anon_0:Movie                                            | 100.004,0  |       |         |                |             |
-| | | | | | | | +Expand(All)  | (u)-[r:RATED]->(anon_0)                                 | 100.004,0  |       |         |                |             |
-| | | | | | | | | +Argument   | u                                                       | 671,0      |       |         |                |             |
-+-----------------------------+---------------------------------------------------------+------------+-------+---------+----------------+-------------+
++-----------------------------+------------------------------------------------------+------------+-------+---------+----------------+-------------+
+| Operador                    | Detalles                                             | Filas est. | Filas | DB hits | Page cache h/m | Tiempo (ms) |
++-----------------------------+------------------------------------------------------+------------+-------+---------+----------------+-------------+
+| +ProduceResults             |                                                      | 671,0      |       |         |                |             |
+| | +EmptyResult              |                                                      | 671,0      |       |         |                |             |
+| | | +TransactionForeach     | IN TRANSACTIONS OF $autoint_0 ROWS ON ERROR FAIL     | 671,0      |       |         |                |             |
+| | | | +NodeByLabelScan      | u:User                                               | 671,0      |       |         |                |             |
+| | | | +SetProperty          | r.ratingNorm = r.rating - promedio                   | 6.710,0    |       |         |                |             |
+| | | | | +Unwind             | calificaciones AS r                                  | 6.710,0    |       |         |                |             |
+| | | | | | +EagerAggregation | collect(r) AS calificaciones, avg(r.rating) AS pr... | 671,0      |       |         |                |             |
+| | | | | | | +Filter         | anon_0:Movie                                         | 100.004,0  |       |         |                |             |
+| | | | | | | | +Expand(All)  | (u)-[r:RATED]->(anon_0)                              | 100.004,0  |       |         |                |             |
+| | | | | | | | | +Argument   | u                                                    | 671,0      |       |         |                |             |
++-----------------------------+------------------------------------------------------+------------+-------+---------+----------------+-------------+
 
 --- Representación original de Neo4j ---
 Cypher 25

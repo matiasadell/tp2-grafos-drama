@@ -1,0 +1,13 @@
+{
+  "id": "1.3a_lpa_stats",
+  "sentencia": "// concurrency 1: LPA no acepta semilla y, con un solo hilo, el resultado es reproducible.\nCALL gds.labelPropagation.stats('califW', {relationshipWeightProperty: 'rating', concurrency: 1})\nYIELD communityCount, ranIterations, didConverge, communityDistribution\nRETURN communityCount, ranIterations, didConverge, communityDistribution",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 44,
+  "result_consumed_after_ms": 151,
+  "tiempo_pared_s": 0.197,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

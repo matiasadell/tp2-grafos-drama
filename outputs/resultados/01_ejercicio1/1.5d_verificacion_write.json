@@ -1,0 +1,13 @@
+{
+  "id": "1.5d_verificacion_write",
+  "sentencia": "// Verificación: la propiedad quedó en la base y su top 5 coincide con el modo stream.\nMATCH (n) WHERE n.betweenness IS NOT NULL\nWITH n ORDER BY n.betweenness DESC, coalesce(n.title, n.name) ASC\nWITH count(n) AS nodosConPropiedad, collect(coalesce(n.title, n.name) + ' (' + toString(round(n.betweenness, 1)) + ')')[0..5] AS top5DesdeLaBase\nRETURN nodosConPropiedad, top5DesdeLaBase",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 118,
+  "result_consumed_after_ms": 150,
+  "tiempo_pared_s": 0.271,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

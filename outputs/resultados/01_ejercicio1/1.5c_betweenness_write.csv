@@ -1,0 +1,2 @@
+propiedadEscrita,nodePropertiesWritten,computeMillis,writeMillis,centralityDistribution
+betweenness,9796,1750,449,"{""p99"": 14845.374999940395, ""min"": 0.0, ""max"": 863783.9999999999, ""p90"": 1104.0234374403954, ""mean"": 1087.642475630475, ""p50"": 12.167358338832855, ""p999"": 139508.9999999404, ""p95"": 2883.5468749403954, ""p75"": 175.90624994039536}"

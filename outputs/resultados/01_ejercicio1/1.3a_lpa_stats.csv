@@ -1,0 +1,2 @@
+communityCount,ranIterations,didConverge,communityDistribution
+60,4,True,"{""p1"": 1, ""max"": 9737, ""p5"": 1, ""p90"": 1, ""p50"": 1, ""p95"": 1, ""p10"": 1, ""p75"": 1, ""p99"": 9737, ""p25"": 1, ""min"": 1, ""mean"": 163.26666666666668, ""p999"": 9737}"

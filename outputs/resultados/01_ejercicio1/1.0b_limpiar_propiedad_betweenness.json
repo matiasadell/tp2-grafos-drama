@@ -1,0 +1,13 @@
+{
+  "id": "1.0b_limpiar_propiedad_betweenness",
+  "sentencia": "// La propiedad escrita por el modo write (1.5) se borra para que la corrida sea reproducible.\nMATCH (n) WHERE n.betweenness IS NOT NULL\nREMOVE n.betweenness\nRETURN count(n) AS propiedadesBorradas",
+  "filas": 1,
+  "tipo_consulta": "rw",
+  "contadores": {},
+  "result_available_after_ms": 147,
+  "result_consumed_after_ms": 14,
+  "tiempo_pared_s": 0.164,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

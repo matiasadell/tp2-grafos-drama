@@ -1,0 +1,13 @@
+{
+  "id": "1.4a_fastrp_embedding_usuarios",
+  "sentencia": "// Embedding FastRP (dim 128, semilla 42, ponderado por rating) agregado a la proyección (mutate).\nCALL gds.fastRP.mutate('califW', {\n  embeddingDimension: 128,\n  randomSeed: 42,\n  relationshipWeightProperty: 'rating',\n  mutateProperty: 'embFastRP'\n})\nYIELD nodePropertiesWritten, computeMillis\nRETURN nodePropertiesWritten, computeMillis",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 42,
+  "result_consumed_after_ms": 266,
+  "tiempo_pared_s": 0.311,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "1.3b_lpa_top5_comunidades",
+  "sentencia": "CALL gds.labelPropagation.stream('califW', {relationshipWeightProperty: 'rating', concurrency: 1})\nYIELD nodeId, communityId\nWITH communityId, gds.util.asNode(nodeId) AS n\nWITH communityId,\n     count(*) AS tamanio,\n     count(CASE WHEN n:User THEN 1 END) AS usuarios,\n     count(CASE WHEN n:Movie THEN 1 END) AS peliculas\nORDER BY tamanio DESC, communityId ASC\nWITH collect({id: communityId, tamanio: tamanio, usuarios: usuarios, peliculas: peliculas}) AS comunidades\nUNWIND range(0, size(comunidades[0..5]) - 1) AS i\nRETURN size(comunidades) AS totalComunidades,\n       i + 1 AS puesto,\n       comunidades[i].id AS comunidadId,\n       comunidades[i].tamanio AS tamanio,\n       comunidades[i].usuarios AS usuarios,\n       comunidades[i].peliculas AS peliculas\nORDER BY puesto",
+  "filas": 5,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 180,
+  "result_consumed_after_ms": 270,
+  "tiempo_pared_s": 0.454,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

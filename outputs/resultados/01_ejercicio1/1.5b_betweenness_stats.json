@@ -1,0 +1,13 @@
+{
+  "id": "1.5b_betweenness_stats",
+  "sentencia": "CALL gds.betweenness.stats('califW', {samplingSize: 1000, samplingSeed: 42})\nYIELD centralityDistribution, preProcessingMillis, computeMillis, postProcessingMillis\nRETURN centralityDistribution, preProcessingMillis, computeMillis, postProcessingMillis",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 37,
+  "result_consumed_after_ms": 2079,
+  "tiempo_pared_s": 2.12,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

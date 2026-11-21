@@ -1,0 +1,80 @@
+{
+  "script": "src\\cypher\\01_ejercicio1.cypher",
+  "inicio": "2026-11-21T17:06:35",
+  "pasos": [
+    {
+      "id": "1.0a_limpiar_proyeccion",
+      "estado": "ok",
+      "filas": 0,
+      "tiempo_pared_s": 0.199
+    },
+    {
+      "id": "1.0b_limpiar_propiedad_betweenness",
+      "estado": "ok",
+      "filas": 1,
+      "tiempo_pared_s": 0.164
+    },
+    {
+      "id": "1.1_proyeccion_califW",
+      "estado": "ok",
+      "filas": 1,
+      "tiempo_pared_s": 0.57
+    },
+    {
+      "id": "1.2_betweenness_top10",
+      "estado": "ok",
+      "filas": 10,
+      "tiempo_pared_s": 2.417
+    },
+    {
+      "id": "1.3a_lpa_stats",
+      "estado": "ok",
+      "filas": 1,
+      "tiempo_pared_s": 0.197
+    },
+    {
+      "id": "1.3b_lpa_top5_comunidades",
+      "estado": "ok",
+      "filas": 5,
+      "tiempo_pared_s": 0.454
+    },
+    {
+      "id": "1.4a_fastrp_embedding_usuarios",
+      "estado": "ok",
+      "filas": 1,
+      "tiempo_pared_s": 0.311
+    },
+    {
+      "id": "1.4b_knn_usuarios_top10",
+      "estado": "ok",
+      "filas": 10,
+      "tiempo_pared_s": 0.446
+    },
+    {
+      "id": "1.5a_betweenness_stream",
+      "estado": "ok",
+      "filas": 10,
+      "tiempo_pared_s": 1.793
+    },
+    {
+      "id": "1.5b_betweenness_stats",
+      "estado": "ok",
+      "filas": 1,
+      "tiempo_pared_s": 2.12
+    },
+    {
+      "id": "1.5c_betweenness_write",
+      "estado": "ok",
+      "filas": 1,
+      "tiempo_pared_s": 2.545
+    },
+    {
+      "id": "1.5d_verificacion_write",
+      "estado": "ok",
+      "filas": 1,
+      "tiempo_pared_s": 0.271
+    }
+  ],
+  "fin": "2026-11-21T17:06:46",
+  "estado": "ok"
+}

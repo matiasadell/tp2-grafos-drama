@@ -1,0 +1,13 @@
+{
+  "id": "1.4b_knn_usuarios_top10",
+  "sentencia": "// KNN solo entre :User (similitud coseno del embedding). Las listas de KNN no son\n// simétricas: el par se normaliza (a<b) y se deduplica, sin autosimilitud.\nCALL gds.knn.stream('califW', {\n  nodeLabels: ['User'],\n  nodeProperties: ['embFastRP'],\n  topK: 10,\n  randomSeed: 42,\n  concurrency: 1,\n  sampleRate: 1.0,\n  deltaThreshold: 0.0\n})\nYIELD node1, node2, similarity\nWITH CASE WHEN node1 < node2 THEN node1 ELSE node2 END AS a,\n     CASE WHEN node1 < node2 THEN node2 ELSE node1 END AS b,\n     similarity\nWHERE a <> b\nWITH DISTINCT a, b, similarity\nRETURN gds.util.asNode(a).name AS usuario1,\n       gds.util.asNode(b).name AS usuario2,\n       similarity AS similitud\nORDER BY similitud DESC, usuario1 ASC, usuario2 ASC\nLIMIT 10",
+  "filas": 10,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 133,
+  "result_consumed_after_ms": 310,
+  "tiempo_pared_s": 0.446,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

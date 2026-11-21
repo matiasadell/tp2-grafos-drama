@@ -1,0 +1,20 @@
+{
+  "script": "outputs\\_humo.cypher",
+  "inicio": "2026-11-21T17:06:09",
+  "pasos": [
+    {
+      "id": "H.1_conteo",
+      "estado": "ok",
+      "filas": 1,
+      "tiempo_pared_s": 0.008
+    },
+    {
+      "id": "H.2_profile",
+      "estado": "ok",
+      "filas": 3,
+      "tiempo_pared_s": 0.037
+    }
+  ],
+  "fin": "2026-11-21T17:06:10",
+  "estado": "ok"
+}

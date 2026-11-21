@@ -1,0 +1,13 @@
+{
+  "id": "H.1_conteo",
+  "sentencia": "MATCH (n) RETURN count(n) AS nodos",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 3,
+  "result_consumed_after_ms": 1,
+  "tiempo_pared_s": 0.008,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

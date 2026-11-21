@@ -1,0 +1,134 @@
+{
+  "id": "H.2_profile",
+  "sentencia": "PROFILE MATCH (m:Movie) WHERE m.title STARTS WITH 'Toy' RETURN m.title AS titulo ORDER BY titulo LIMIT 3",
+  "filas": 3,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 2,
+  "result_consumed_after_ms": 1,
+  "tiempo_pared_s": 0.037,
+  "plan_tipo": "PROFILE",
+  "plan_resumen": {
+    "runtime": "PIPELINED",
+    "runtime_impl": "PIPELINED",
+    "planner": "COST",
+    "version": "25",
+    "operador_inicial": "NodeIndexSeekByRange",
+    "operadores_preorden": [
+      "ProduceResults",
+      "Projection",
+      "Limit",
+      "NodeIndexSeekByRange"
+    ],
+    "db_hits_total": 5,
+    "tiene_eager": false,
+    "eager": [],
+    "nota_eager": "Los pasos se cuentan en preorden desde la raíz (1 = ProduceResults/raíz). EagerAggregation no es una barrera Eager de lectura/escritura y se excluye."
+  },
+  "plan": {
+    "args": {
+      "Order": "titulo ASC",
+      "GlobalMemory": 312,
+      "planner-impl": "IDP",
+      "Memory": 0,
+      "string-representation": "Cypher 25\r\n\r\nPlanner COST\r\n\r\nRuntime PIPELINED\r\n\r\nRuntime version 2026.09.0\r\n\r\nBatch size 128\r\n\r\n+-----------------------+----+----------------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+-------------+---------------------+-------------------+\r\n| Operator              | Id | Details                                                                          | Estimated Rows | Rows | DB Hits | Memory (Bytes) | Page Cache Hits/Misses | Time (ms) | Ordered by  | Pipeline            | Indexes Used      |\r\n+-----------------------+----+----------------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+-------------+---------------------+-------------------+\r\n| +ProduceResults       |  0 | titulo                                                                           |              3 |    3 |       0 |              0 |                        |           |             |                     |                   |\r\n| |                     +----+----------------------------------------------------------------------------------+----------------+------+---------+----------------+                        |           |             |                     +-------------------+\r\n| +Projection           |  1 | cache[m.title] AS titulo                                                         |              3 |    3 |       0 |                |                        |           | titulo ASC  |                     |                   |\r\n| |                     +----+----------------------------------------------------------------------------------+----------------+------+---------+----------------+                        |           +-------------+                     +-------------------+\r\n| +Limit                |  2 | 3                                                                                |              3 |    3 |       0 |             32 |                        |           |             |                     |                   |\r\n| |                     +----+----------------------------------------------------------------------------------+----------------+------+---------+----------------+                        |           |             |                     +-------------------+\r\n| +NodeIndexSeekByRange |  3 | RANGE INDEX m:Movie(title) WHERE title STARTS WITH $autostring_0, cache[m.title] |              3 |    4 |       5 |            248 |                    2/0 |     0,394 | m.title ASC | Fused in Pipeline 0 | index_ea29e173: 1 |\r\n+-----------------------+----+----------------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+-------------+---------------------+-------------------+\r\n\r\nTotal database accesses: 5, total allocated memory: 312\r\n",
+      "runtime": "PIPELINED",
+      "runtime-impl": "PIPELINED",
+      "version": "25",
+      "DbHits": 0,
+      "batch-size": 128,
+      "Details": "titulo",
+      "planner-version": "2026.09.0",
+      "PipelineInfo": "Fused in Pipeline 0",
+      "runtime-version": "2026.09.0",
+      "Id": 0,
+      "EstimatedRows": 3.0,
+      "planner": "COST",
+      "Rows": 3
+    },
+    "children": [
+      {
+        "args": {
+          "Order": "titulo ASC",
+          "Details": "cache[m.title] AS titulo",
+          "PipelineInfo": "Fused in Pipeline 0",
+          "Id": 1,
+          "EstimatedRows": 3.0,
+          "DbHits": 0,
+          "Rows": 3
+        },
+        "children": [
+          {
+            "args": {
+              "Order": "m.title ASC",
+              "Details": "3",
+              "Memory": 32,
+              "PipelineInfo": "Fused in Pipeline 0",
+              "Id": 2,
+              "EstimatedRows": 3.0,
+              "DbHits": 0,
+              "Rows": 3
+            },
+            "children": [
+              {
+                "args": {
+                  "Order": "m.title ASC",
+                  "Details": "RANGE INDEX m:Movie(title) WHERE title STARTS WITH $autostring_0, cache[m.title]",
+                  "PipelineInfo": "Fused in Pipeline 0",
+                  "Memory": 248,
+                  "Time": 393600,
+                  "Id": 3,
+                  "UsedIndexes": "index_ea29e173: 1",
+                  "EstimatedRows": 3.0,
+                  "PageCacheMisses": 0,
+                  "DbHits": 5,
+                  "Rows": 4,
+                  "PageCacheHits": 2
+                },
+                "pageCacheMisses": 0,
+                "dbHits": 5,
+                "identifiers": [
+                  "m"
+                ],
+                "operatorType": "NodeIndexSeekByRange@neo4j",
+                "time": 393600,
+                "rows": 4,
+                "pageCacheHitRatio": 1.0,
+                "pageCacheHits": 2
+              }
+            ],
+            "dbHits": 0,
+            "identifiers": [
+              "m"
+            ],
+            "operatorType": "Limit@neo4j",
+            "rows": 3
+          }
+        ],
+        "dbHits": 0,
+        "identifiers": [
+          "m",
+          "titulo"
+        ],
+        "operatorType": "Projection@neo4j",
+        "rows": 3
+      }
+    ],
+    "dbHits": 0,
+    "identifiers": [
+      "m",
+      "titulo"
+    ],
+    "operatorType": "ProduceResults@neo4j",
+    "rows": 3
+  },
+  "medicion": {
+    "repeticiones": 2,
+    "tiempos_ms": [
+      3,
+      3
+    ],
+    "mediana_ms": 3.0,
+    "criterio": "1 calentamiento + N medidas; available_after + consumed_after"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "2.0b_borrar_indice_propio",
+  "sentencia": "DROP INDEX movie_year_range IF EXISTS",
+  "filas": 0,
+  "tipo_consulta": "s",
+  "contadores": {
+    "indexes_removed": 1
+  },
+  "result_available_after_ms": 3,
+  "result_consumed_after_ms": 0,
+  "tiempo_pared_s": 0.011,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

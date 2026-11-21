@@ -1,0 +1,176 @@
+{
+  "id": "2.1_profile_sin_indice",
+  "sentencia": "PROFILE\nMATCH (m:Movie)\nWHERE m.year >= 1990 AND m.year <= 1999\nRETURN count(m) AS peliculas",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 3,
+  "result_consumed_after_ms": 12,
+  "tiempo_pared_s": 0.427,
+  "plan_tipo": "PROFILE",
+  "plan_resumen": {
+    "runtime": "PIPELINED",
+    "runtime_impl": "PIPELINED",
+    "planner": "COST",
+    "version": "25",
+    "operador_inicial": "NodeByLabelScan",
+    "operadores_preorden": [
+      "ProduceResults",
+      "EagerAggregation",
+      "Filter",
+      "NodeByLabelScan"
+    ],
+    "db_hits_total": 18222,
+    "tiempo_operadores_ms": 10.881,
+    "tiene_eager": false,
+    "eager": [],
+    "nota_eager": "Los pasos se cuentan en preorden desde la raíz (1 = ProduceResults/raíz). EagerAggregation no es una barrera Eager de lectura/escritura y se excluye."
+  },
+  "plan": {
+    "args": {
+      "GlobalMemory": 480,
+      "planner-impl": "IDP",
+      "Memory": 0,
+      "string-representation": "Cypher 25\r\n\r\nPlanner COST\r\n\r\nRuntime PIPELINED\r\n\r\nRuntime version 2026.09.0\r\n\r\nBatch size 1024\r\n\r\n+-------------------+----+---------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+\r\n| Operator          | Id | Details                                                       | Estimated Rows | Rows | DB Hits | Memory (Bytes) | Page Cache Hits/Misses | Time (ms) | Pipeline            |\r\n+-------------------+----+---------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+\r\n| +ProduceResults   |  0 | peliculas                                                     |              1 |    1 |       0 |              0 |                    0/0 |     0,085 | In Pipeline 1       |\r\n| |                 +----+---------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+\r\n| +EagerAggregation |  1 | count(m) AS peliculas                                         |              1 |    1 |       0 |             40 |                        |           |                     |\r\n| |                 +----+---------------------------------------------------------------+----------------+------+---------+----------------+                        |           |                     |\r\n| +Filter           |  2 | (cache[m.year] >= $autoint_0 AND cache[m.year] <= $autoint_1) |           2281 | 2202 |    9096 |                |                        |           |                     |\r\n| |                 +----+---------------------------------------------------------------+----------------+------+---------+----------------+                        |           |                     |\r\n| +NodeByLabelScan  |  3 | m:Movie                                                       |           9125 | 9125 |    9126 |            376 |                29522/0 |    10,796 | Fused in Pipeline 0 |\r\n+-------------------+----+---------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+\r\n\r\nTotal database accesses: 18222, total allocated memory: 480\r\n",
+      "runtime": "PIPELINED",
+      "Time": 85100,
+      "runtime-impl": "PIPELINED",
+      "version": "25",
+      "DbHits": 0,
+      "batch-size": 1024,
+      "Details": "peliculas",
+      "planner-version": "2026.09.0",
+      "PipelineInfo": "In Pipeline 1",
+      "runtime-version": "2026.09.0",
+      "Id": 0,
+      "EstimatedRows": 1.0,
+      "planner": "COST",
+      "PageCacheMisses": 0,
+      "Rows": 1,
+      "PageCacheHits": 0
+    },
+    "pageCacheMisses": 0,
+    "children": [
+      {
+        "args": {
+          "Details": "count(m) AS peliculas",
+          "Memory": 40,
+          "PipelineInfo": "Fused in Pipeline 0",
+          "Id": 1,
+          "EstimatedRows": 1.0,
+          "DbHits": 0,
+          "Rows": 1
+        },
+        "children": [
+          {
+            "args": {
+              "Id": 2,
+              "Details": "(cache[m.year] >= $autoint_0 AND cache[m.year] <= $autoint_1)",
+              "EstimatedRows": 2281.25,
+              "PipelineInfo": "Fused in Pipeline 0",
+              "DbHits": 9096,
+              "Rows": 2202
+            },
+            "children": [
+              {
+                "args": {
+                  "Details": "m:Movie",
+                  "PipelineInfo": "Fused in Pipeline 0",
+                  "Memory": 376,
+                  "Time": 10795597,
+                  "Id": 3,
+                  "EstimatedRows": 9125.0,
+                  "PageCacheMisses": 0,
+                  "DbHits": 9126,
+                  "Rows": 9125,
+                  "PageCacheHits": 29522
+                },
+                "pageCacheMisses": 0,
+                "dbHits": 9126,
+                "identifiers": [
+                  "m"
+                ],
+                "operatorType": "NodeByLabelScan@neo4j",
+                "time": 10795597,
+                "rows": 9125,
+                "pageCacheHitRatio": 1.0,
+                "pageCacheHits": 29522
+              }
+            ],
+            "dbHits": 9096,
+            "identifiers": [
+              "m"
+            ],
+            "operatorType": "Filter@neo4j",
+            "rows": 2202
+          }
+        ],
+        "dbHits": 0,
+        "identifiers": [
+          "peliculas"
+        ],
+        "operatorType": "EagerAggregation@neo4j",
+        "rows": 1
+      }
+    ],
+    "dbHits": 0,
+    "identifiers": [
+      "peliculas"
+    ],
+    "operatorType": "ProduceResults@neo4j",
+    "time": 85100,
+    "rows": 1,
+    "pageCacheHitRatio": 0.0,
+    "pageCacheHits": 0
+  },
+  "medicion": {
+    "repeticiones": 20,
+    "tiempos_ms": [
+      16,
+      12,
+      9,
+      9,
+      10,
+      9,
+      9,
+      9,
+      9,
+      50,
+      13,
+      14,
+      8,
+      10,
+      10,
+      13,
+      12,
+      10,
+      12,
+      15
+    ],
+    "mediana_ms": 10.0,
+    "criterio": "1 calentamiento + N medidas; available_after + consumed_after",
+    "tiempos_operadores_ms": [
+      12.927,
+      9.56,
+      6.351,
+      7.51,
+      6.578,
+      6.651,
+      5.949,
+      6.139,
+      6.162,
+      10.374,
+      9.87,
+      10.464,
+      6.635,
+      7.477,
+      7.691,
+      10.605,
+      9.124,
+      6.735,
+      8.582,
+      10.881
+    ],
+    "mediana_operadores_ms": 7.601
+  }
+}

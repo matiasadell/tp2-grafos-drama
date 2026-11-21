@@ -1,0 +1,15 @@
+{
+  "id": "2.4a_escritura_ratingNorm",
+  "sentencia": "// Un lote = 50 usuarios (cada uno con todas sus calificaciones), así cada\n// transacción calcula el promedio de su usuario y escribe sus [:RATED].\nMATCH (u:User)\nCALL (u) {\n  MATCH (u)-[r:RATED]->(:Movie)\n  WITH collect(r) AS calificaciones, avg(r.rating) AS promedio\n  UNWIND calificaciones AS r\n  SET r.ratingNorm = r.rating - promedio\n} IN TRANSACTIONS OF 50 ROWS",
+  "filas": 0,
+  "tipo_consulta": "w",
+  "contadores": {
+    "properties_set": 100004
+  },
+  "result_available_after_ms": 1019,
+  "result_consumed_after_ms": 0,
+  "tiempo_pared_s": 1.02,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

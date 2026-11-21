@@ -1,0 +1,191 @@
+{
+  "id": "2.3c_explain_escritura_2_4",
+  "sentencia": "// Plan de la sentencia de escritura del 2.4 (sin ejecutarla), para buscar un operador Eager.\nEXPLAIN\nMATCH (u:User)\nCALL (u) {\n  MATCH (u)-[r:RATED]->(:Movie)\n  WITH collect(r) AS calificaciones, avg(r.rating) AS promedio\n  UNWIND calificaciones AS r\n  SET r.ratingNorm = r.rating - promedio\n} IN TRANSACTIONS OF 50 ROWS",
+  "filas": 0,
+  "tipo_consulta": "w",
+  "contadores": {},
+  "result_available_after_ms": 50,
+  "result_consumed_after_ms": 0,
+  "tiempo_pared_s": 0.052,
+  "plan_tipo": "EXPLAIN",
+  "plan_resumen": {
+    "runtime": "PIPELINED",
+    "runtime_impl": "PIPELINED",
+    "planner": "COST",
+    "version": "25",
+    "operador_inicial": "NodeByLabelScan",
+    "operadores_preorden": [
+      "ProduceResults",
+      "EmptyResult",
+      "TransactionForeach",
+      "NodeByLabelScan",
+      "SetProperty",
+      "Unwind",
+      "EagerAggregation",
+      "Filter",
+      "Expand(All)",
+      "Argument"
+    ],
+    "db_hits_total": null,
+    "tiempo_operadores_ms": null,
+    "tiene_eager": false,
+    "eager": [],
+    "nota_eager": "Los pasos se cuentan en preorden desde la raíz (1 = ProduceResults/raíz). EagerAggregation no es una barrera Eager de lectura/escritura y se excluye."
+  },
+  "plan": {
+    "args": {
+      "planner-impl": "IDP",
+      "string-representation": "Cypher 25\r\n\r\nPlanner COST\r\n\r\nRuntime PIPELINED\r\n\r\nRuntime version 2026.09.0\r\n\r\nBatch size 1024\r\n\r\n+---------------------+----+---------------------------------------------------------+----------------+---------------------+\r\n| Operator            | Id | Details                                                 | Estimated Rows | Pipeline            |\r\n+---------------------+----+---------------------------------------------------------+----------------+---------------------+\r\n| +ProduceResults     |  0 |                                                         |            671 |                     |\r\n| |                   +----+---------------------------------------------------------+----------------+                     |\r\n| +EmptyResult        |  1 |                                                         |            671 | Fused in Pipeline 4 |\r\n| |                   +----+---------------------------------------------------------+----------------+---------------------+\r\n| +TransactionForeach |  2 | IN TRANSACTIONS OF $autoint_0 ROWS ON ERROR FAIL        |            671 |                     |\r\n| |\\                  +----+---------------------------------------------------------+----------------+                     |\r\n| | +SetProperty      |  3 | r.ratingNorm = r.rating - promedio                      |           6710 |                     |\r\n| | |                 +----+---------------------------------------------------------+----------------+                     |\r\n| | +Unwind           |  4 | calificaciones AS r                                     |           6710 | Fused in Pipeline 3 |\r\n| | |                 +----+---------------------------------------------------------+----------------+---------------------+\r\n| | +EagerAggregation |  5 | collect(r) AS calificaciones, avg(r.rating) AS promedio |            671 |                     |\r\n| | |                 +----+---------------------------------------------------------+----------------+                     |\r\n| | +Filter           |  6 | anon_0:Movie                                            |         100004 |                     |\r\n| | |                 +----+---------------------------------------------------------+----------------+                     |\r\n| | +Expand(All)      |  7 | (u)-[r:RATED]->(anon_0)                                 |         100004 |                     |\r\n| | |                 +----+---------------------------------------------------------+----------------+                     |\r\n| | +Argument         |  8 | u                                                       |            671 | Fused in Pipeline 1 |\r\n| |                   +----+---------------------------------------------------------+----------------+---------------------+\r\n| +NodeByLabelScan    |  9 | u:User                                                  |            671 | In Pipeline 0       |\r\n+---------------------+----+---------------------------------------------------------+----------------+---------------------+\r\n\r\nTotal database accesses: ?\r\n",
+      "runtime": "PIPELINED",
+      "runtime-impl": "PIPELINED",
+      "version": "25",
+      "batch-size": 1024,
+      "Details": "",
+      "planner-version": "2026.09.0",
+      "PipelineInfo": "Fused in Pipeline 4",
+      "runtime-version": "2026.09.0",
+      "Id": 0,
+      "EstimatedRows": 671.0,
+      "planner": "COST"
+    },
+    "children": [
+      {
+        "args": {
+          "EstimatedRows": 671.0,
+          "PipelineInfo": "Fused in Pipeline 4",
+          "Id": 1
+        },
+        "children": [
+          {
+            "args": {
+              "Details": "IN TRANSACTIONS OF $autoint_0 ROWS ON ERROR FAIL",
+              "Id": 2,
+              "EstimatedRows": 671.0,
+              "PipelineInfo": "Fused in Pipeline 3"
+            },
+            "children": [
+              {
+                "args": {
+                  "Details": "u:User",
+                  "Id": 9,
+                  "EstimatedRows": 671.0,
+                  "PipelineInfo": "In Pipeline 0"
+                },
+                "identifiers": [
+                  "u"
+                ],
+                "operatorType": "NodeByLabelScan@neo4j"
+              },
+              {
+                "args": {
+                  "Details": "r.ratingNorm = r.rating - promedio",
+                  "Id": 3,
+                  "EstimatedRows": 6710.0,
+                  "PipelineInfo": "Fused in Pipeline 3"
+                },
+                "children": [
+                  {
+                    "args": {
+                      "Details": "calificaciones AS r",
+                      "Id": 4,
+                      "EstimatedRows": 6710.0,
+                      "PipelineInfo": "Fused in Pipeline 3"
+                    },
+                    "children": [
+                      {
+                        "args": {
+                          "Details": "collect(r) AS calificaciones, avg(r.rating) AS promedio",
+                          "Id": 5,
+                          "EstimatedRows": 671.0,
+                          "PipelineInfo": "Fused in Pipeline 1"
+                        },
+                        "children": [
+                          {
+                            "args": {
+                              "Details": "anon_0:Movie",
+                              "Id": 6,
+                              "EstimatedRows": 100004.0,
+                              "PipelineInfo": "Fused in Pipeline 1"
+                            },
+                            "children": [
+                              {
+                                "args": {
+                                  "Details": "(u)-[r:RATED]->(anon_0)",
+                                  "Id": 7,
+                                  "EstimatedRows": 100004.0,
+                                  "PipelineInfo": "Fused in Pipeline 1"
+                                },
+                                "children": [
+                                  {
+                                    "args": {
+                                      "Details": "u",
+                                      "Id": 8,
+                                      "EstimatedRows": 671.0,
+                                      "PipelineInfo": "Fused in Pipeline 1"
+                                    },
+                                    "identifiers": [
+                                      "u"
+                                    ],
+                                    "operatorType": "Argument@neo4j"
+                                  }
+                                ],
+                                "identifiers": [
+                                  "u",
+                                  "r",
+                                  "anon_0"
+                                ],
+                                "operatorType": "Expand(All)@neo4j"
+                              }
+                            ],
+                            "identifiers": [
+                              "u",
+                              "r",
+                              "anon_0"
+                            ],
+                            "operatorType": "Filter@neo4j"
+                          }
+                        ],
+                        "identifiers": [
+                          "calificaciones",
+                          "promedio",
+                          "u"
+                        ],
+                        "operatorType": "EagerAggregation@neo4j"
+                      }
+                    ],
+                    "identifiers": [
+                      "calificaciones",
+                      "promedio",
+                      "r",
+                      "u"
+                    ],
+                    "operatorType": "Unwind@neo4j"
+                  }
+                ],
+                "identifiers": [
+                  "calificaciones",
+                  "promedio",
+                  "r",
+                  "u"
+                ],
+                "operatorType": "SetProperty@neo4j"
+              }
+            ],
+            "identifiers": [
+              "u"
+            ],
+            "operatorType": "TransactionForeach@neo4j"
+          }
+        ],
+        "identifiers": [
+          "u"
+        ],
+        "operatorType": "EmptyResult@neo4j"
+      }
+    ],
+    "identifiers": [
+      "u"
+    ],
+    "operatorType": "ProduceResults@neo4j"
+  }
+}

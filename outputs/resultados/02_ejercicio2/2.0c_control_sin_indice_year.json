@@ -1,0 +1,13 @@
+{
+  "id": "2.0c_control_sin_indice_year",
+  "sentencia": "// Control: no debe quedar ningún índice sobre Movie(year).\nSHOW INDEXES YIELD name, type, labelsOrTypes, properties, state\nWHERE 'Movie' IN coalesce(labelsOrTypes, []) AND 'year' IN coalesce(properties, [])\nRETURN count(*) AS indicesSobreMovieYear",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 22,
+  "result_consumed_after_ms": 1,
+  "tiempo_pared_s": 0.025,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "2.4c_verificacion_por_usuario",
+  "sentencia": "// Por usuario, el promedio de ratingNorm tiene que dar 0 (es rating centrado en su media).\nMATCH (u:User)-[r:RATED]->()\nWITH u, count(r) AS calificaciones, avg(r.rating) AS promedioRating, avg(r.ratingNorm) AS promedioRatingNorm\nRETURN u.name AS usuario,\n       calificaciones,\n       round(promedioRating, 3) AS promedioRating,\n       round(promedioRatingNorm, 6) AS promedioRatingNorm\nORDER BY calificaciones DESC, usuario ASC\nLIMIT 5",
+  "filas": 5,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 46,
+  "result_consumed_after_ms": 82,
+  "tiempo_pared_s": 0.131,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

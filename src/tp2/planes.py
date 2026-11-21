@@ -43,6 +43,8 @@ def resumen(plan: Plan | None) -> dict[str, Any]:
     raiz = _args(plan)
     nodos = list(recorrer(plan))
     db_hits = sum(int(n.get("dbHits", 0) or 0) for _, n in nodos)
+    # En el runtime pipelined el tiempo (ns) se informa por pipeline, en su operador de cabecera.
+    tiempos_ns = [n["time"] for _, n in nodos if isinstance(n.get("time"), (int, float))]
     operadores = [limpiar_operador(n.get("operatorType", "?")) for _, n in nodos]
     eager = [
         {"paso": i + 1, "operador": op, "profundidad": nodos[i][0]}
@@ -57,6 +59,7 @@ def resumen(plan: Plan | None) -> dict[str, Any]:
         "operador_inicial": operador_inicial(plan),
         "operadores_preorden": operadores,
         "db_hits_total": db_hits if any("dbHits" in n for _, n in nodos) else None,
+        "tiempo_operadores_ms": round(sum(tiempos_ns) / 1e6, 3) if tiempos_ns else None,
         "tiene_eager": bool(eager),
         "eager": eager,
         "nota_eager": (
@@ -66,11 +69,12 @@ def resumen(plan: Plan | None) -> dict[str, Any]:
     }
 
 
-def _fmt(n: Any) -> str:
+def _fmt(n: Any, dec: int = 1) -> str:
+    """Formato es-AR: punto de miles y coma decimal (2.281,2)."""
     if n is None or n == "":
         return ""
     if isinstance(n, float):
-        return f"{n:,.1f}".replace(",", ".")
+        return f"{n:,.{dec}f}".replace(",", "§").replace(".", ",").replace("§", ".")
     if isinstance(n, int):
         return f"{n:,}".replace(",", ".")
     return str(n)
@@ -93,7 +97,7 @@ def tabla_texto(plan: Plan, titulo: str = "") -> str:
             _fmt(nodo.get("dbHits")),
             (f"{_fmt(nodo.get('pageCacheHits'))}/{_fmt(nodo.get('pageCacheMisses'))}"
              if "pageCacheHits" in nodo else ""),
-            _fmt(round(tiempo / 1e6, 3)) if isinstance(tiempo, (int, float)) and tiempo else "",
+            _fmt(tiempo / 1e6, 3) if isinstance(tiempo, (int, float)) and tiempo else "",
         ])
     encabezado = ["Operador", "Detalles", "Filas est.", "Filas", "DB hits", "Page cache h/m", "Tiempo (ms)"]
     anchos = [max(len(str(x)) for x in col) for col in zip(encabezado, *filas)]
@@ -110,6 +114,7 @@ def tabla_texto(plan: Plan, titulo: str = "") -> str:
         f"Runtime: {r.get('runtime')} ({r.get('runtime_impl')}) | Planner: {r.get('planner')} | "
         f"Operador inicial: {r.get('operador_inicial')}"
         + (f" | DB hits totales: {_fmt(r.get('db_hits_total'))}" if r.get("db_hits_total") is not None else "")
+        + (f" | Tiempo operadores: {_fmt(r.get('tiempo_operadores_ms'), 3)} ms" if r.get("tiempo_operadores_ms") else "")
         + f" | Eager: {'sí, paso(s) ' + ', '.join(str(e['paso']) for e in r['eager']) if r['tiene_eager'] else 'no'}"
     )
     return "\n".join(cabecera + [sep, linea(encabezado), sep] + [linea(f) for f in filas] + [sep])

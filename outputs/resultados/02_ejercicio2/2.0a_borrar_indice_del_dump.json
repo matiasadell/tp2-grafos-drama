@@ -1,0 +1,20 @@
+{
+  "id": "2.0a_borrar_indice_del_dump",
+  "sentencia": "DROP INDEX index_fc5f831e IF EXISTS",
+  "filas": 0,
+  "tipo_consulta": "s",
+  "contadores": {},
+  "result_available_after_ms": 4,
+  "result_consumed_after_ms": 0,
+  "tiempo_pared_s": 0.005,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null,
+  "notificaciones": [
+    {
+      "gql_status": "00NA1",
+      "descripcion": "note: successful completion - index or constraint does not exist. The command 'DROP INDEX index_fc5f831e IF EXISTS' has no effect. The specified index or constraint `index_fc5f831e` does not exist.",
+      "clasificacion": "NotificationClassification.SCHEMA"
+    }
+  ]
+}

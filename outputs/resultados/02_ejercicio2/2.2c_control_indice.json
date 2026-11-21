@@ -1,0 +1,13 @@
+{
+  "id": "2.2c_control_indice",
+  "sentencia": "SHOW INDEXES YIELD name, type, labelsOrTypes, properties, state, populationPercent\nWHERE name = 'movie_year_range'\nRETURN name, type, labelsOrTypes, properties, state, populationPercent",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 32,
+  "result_consumed_after_ms": 1,
+  "tiempo_pared_s": 0.035,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

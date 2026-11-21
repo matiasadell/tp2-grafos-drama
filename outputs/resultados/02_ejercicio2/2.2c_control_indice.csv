@@ -1,0 +1,2 @@
+name,type,labelsOrTypes,properties,state,populationPercent
+movie_year_range,RANGE,"[""Movie""]","[""year""]",ONLINE,100.0

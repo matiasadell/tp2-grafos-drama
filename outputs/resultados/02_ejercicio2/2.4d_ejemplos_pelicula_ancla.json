@@ -1,0 +1,13 @@
+{
+  "id": "2.4d_ejemplos_pelicula_ancla",
+  "sentencia": "// Ejemplos sobre la película ancla: misma nota, distinta ratingNorm según la media de cada usuario.\nCALL () {\n  MATCH (:Genre {name: 'Drama'})<-[:IN_GENRE]-(m:Movie)\n  WITH m, COUNT { (m)<-[:RATED]-(:User) } AS c\n  ORDER BY c DESC, m.title ASC\n  LIMIT 1\n  RETURN m AS ancla\n}\nMATCH (u:User)-[r:RATED]->(ancla)\nRETURN ancla.title AS pelicula, u.name AS usuario, r.rating AS rating, round(r.ratingNorm, 3) AS ratingNorm\nORDER BY r.ratingNorm DESC, usuario ASC\nLIMIT 5",
+  "filas": 5,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 113,
+  "result_consumed_after_ms": 68,
+  "tiempo_pared_s": 0.185,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

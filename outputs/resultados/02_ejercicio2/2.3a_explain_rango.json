@@ -1,0 +1,77 @@
+{
+  "id": "2.3a_explain_rango",
+  "sentencia": "EXPLAIN\nMATCH (m:Movie)\nWHERE m.year >= 1990 AND m.year <= 1999\nRETURN count(m) AS peliculas",
+  "filas": 0,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 10,
+  "result_consumed_after_ms": 0,
+  "tiempo_pared_s": 0.012,
+  "plan_tipo": "EXPLAIN",
+  "plan_resumen": {
+    "runtime": "PIPELINED",
+    "runtime_impl": "PIPELINED",
+    "planner": "COST",
+    "version": "25",
+    "operador_inicial": "NodeIndexSeekByRange",
+    "operadores_preorden": [
+      "ProduceResults",
+      "EagerAggregation",
+      "NodeIndexSeekByRange"
+    ],
+    "db_hits_total": null,
+    "tiempo_operadores_ms": null,
+    "tiene_eager": false,
+    "eager": [],
+    "nota_eager": "Los pasos se cuentan en preorden desde la raíz (1 = ProduceResults/raíz). EagerAggregation no es una barrera Eager de lectura/escritura y se excluye."
+  },
+  "plan": {
+    "args": {
+      "planner-impl": "IDP",
+      "string-representation": "Cypher 25\r\n\r\nPlanner COST\r\n\r\nRuntime PIPELINED\r\n\r\nRuntime version 2026.09.0\r\n\r\nBatch size 128\r\n\r\n+-----------------------+----+---------------------------------------------------------------------------+----------------+---------------------+\r\n| Operator              | Id | Details                                                                   | Estimated Rows | Pipeline            |\r\n+-----------------------+----+---------------------------------------------------------------------------+----------------+---------------------+\r\n| +ProduceResults       |  0 | peliculas                                                                 |              1 | In Pipeline 1       |\r\n| |                     +----+---------------------------------------------------------------------------+----------------+---------------------+\r\n| +EagerAggregation     |  1 | count(m) AS peliculas                                                     |              1 |                     |\r\n| |                     +----+---------------------------------------------------------------------------+----------------+                     |\r\n| +NodeIndexSeekByRange |  2 | RANGE INDEX m:Movie(year) WHERE year >= $autoint_0 AND year <= $autoint_1 |            223 | Fused in Pipeline 0 |\r\n+-----------------------+----+---------------------------------------------------------------------------+----------------+---------------------+\r\n\r\nTotal database accesses: ?\r\n",
+      "runtime": "PIPELINED",
+      "runtime-impl": "PIPELINED",
+      "version": "25",
+      "batch-size": 128,
+      "Details": "peliculas",
+      "planner-version": "2026.09.0",
+      "PipelineInfo": "In Pipeline 1",
+      "runtime-version": "2026.09.0",
+      "Id": 0,
+      "EstimatedRows": 1.0,
+      "planner": "COST"
+    },
+    "children": [
+      {
+        "args": {
+          "Details": "count(m) AS peliculas",
+          "Id": 1,
+          "EstimatedRows": 1.0,
+          "PipelineInfo": "Fused in Pipeline 0"
+        },
+        "children": [
+          {
+            "args": {
+              "Details": "RANGE INDEX m:Movie(year) WHERE year >= $autoint_0 AND year <= $autoint_1",
+              "Id": 2,
+              "EstimatedRows": 223.42601941747571,
+              "PipelineInfo": "Fused in Pipeline 0"
+            },
+            "identifiers": [
+              "m"
+            ],
+            "operatorType": "NodeIndexSeekByRange@neo4j"
+          }
+        ],
+        "identifiers": [
+          "peliculas"
+        ],
+        "operatorType": "EagerAggregation@neo4j"
+      }
+    ],
+    "identifiers": [
+      "peliculas"
+    ],
+    "operatorType": "ProduceResults@neo4j"
+  }
+}

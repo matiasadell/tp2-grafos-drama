@@ -156,12 +156,14 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"[{pid}] ...", flush=True)
                 t0 = time.perf_counter()
                 try:
-                    tiempos = []
+                    tiempos, tiempos_op = [], []
                     if medir:
                         ejecutar_una_vez(session, sentencia)  # calentamiento (planificación y caché)
                         for _ in range(medir):
                             registros, s = ejecutar_una_vez(session, sentencia)
                             tiempos.append((s.result_available_after or 0) + (s.result_consumed_after or 0))
+                            if s.profile:
+                                tiempos_op.append(resumen(s.profile).get("tiempo_operadores_ms"))
                     else:
                         registros, s = ejecutar_una_vez(session, sentencia)
                 except Exception as exc:
@@ -197,6 +199,9 @@ def main(argv: list[str] | None = None) -> int:
                     info["medicion"] = {"repeticiones": medir, "tiempos_ms": tiempos,
                                         "mediana_ms": statistics.median(tiempos),
                                         "criterio": "1 calentamiento + N medidas; available_after + consumed_after"}
+                    if tiempos_op and all(t is not None for t in tiempos_op):
+                        info["medicion"]["tiempos_operadores_ms"] = tiempos_op
+                        info["medicion"]["mediana_operadores_ms"] = round(statistics.median(tiempos_op), 3)
                 notas = [
                     {"gql_status": o.gql_status, "descripcion": o.status_description,
                      "clasificacion": str(o.classification)}
@@ -209,7 +214,11 @@ def main(argv: list[str] | None = None) -> int:
                 if plan:
                     guardar_render(plan, args.planes / pid, f"{pid} ({info['plan_tipo']})")
 
-                extra = f" | mediana {info['medicion']['mediana_ms']} ms" if medir else ""
+                extra = ""
+                if medir:
+                    extra = f" | mediana {info['medicion']['mediana_ms']} ms"
+                    if "mediana_operadores_ms" in info["medicion"]:
+                        extra += f" (operadores {info['medicion']['mediana_operadores_ms']} ms)"
                 if plan:
                     r = info["plan_resumen"]
                     extra += (f" | {info['plan_tipo']}: inicial={r['operador_inicial']} "

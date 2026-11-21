@@ -1,0 +1,15 @@
+{
+  "id": "2.2a_crear_indice_rango",
+  "sentencia": "CREATE RANGE INDEX movie_year_range IF NOT EXISTS FOR (m:Movie) ON (m.year)",
+  "filas": 0,
+  "tipo_consulta": "s",
+  "contadores": {
+    "indexes_added": 1
+  },
+  "result_available_after_ms": 10,
+  "result_consumed_after_ms": 0,
+  "tiempo_pared_s": 0.018,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

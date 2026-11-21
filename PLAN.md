@@ -27,7 +27,7 @@ Todo tiene que estar listo el 22/11/2026 a la noche. La entrega en el EVA cierra
   - `src/tp2/run_cypher.py` separa el archivo por esos marcadores y ejecuta cada paso en autocommit, que es lo que exige `CALL … IN TRANSACTIONS`.
   - Guarda `outputs/resultados/<script>/<id>.csv` más `<id>.json` (resumen, contadores, tiempos y plan si hay PROFILE/EXPLAIN).
   - Si el paso es PROFILE o EXPLAIN, guarda además un render en `outputs/planes/<id>.png` y `.txt`.
-- **Medición de tiempos (Ej. 2):** una corrida de calentamiento y 5 medidas; se informa la mediana de `result_available_after + result_consumed_after` (ms). Los db hits salen del PROFILE, que son deterministas.
+- **Medición de tiempos (Ej. 2):** una corrida de calentamiento y 20 medidas; se informa la mediana de `result_available_after + result_consumed_after` (ms) y la mediana del tiempo de operadores del PROFILE, que es más fino. Los db hits salen del PROFILE, que son deterministas.
 - **Parámetros GDS:**
 
   | Algoritmo | Parámetros |
@@ -171,11 +171,11 @@ Todo tiene que estar listo el 22/11/2026 a la noche. La entrega en el EVA cierra
 **Objective:** Escribir y ejecutar `02_ejercicio2.cypher` con los entregables 2.1–2.4, incluidas las mediciones y los renders de los planes.
 **Description:**
 - **Preparación:** `DROP INDEX index_fc5f831e IF EXISTS`, `DROP INDEX movie_year_range IF EXISTS` y `SHOW INDEXES` de control (no debe quedar ningún índice sobre `Movie(year)`).
-- **2.1** `PROFILE MATCH (m:Movie) WHERE m.year >= 1990 AND m.year <= 1999 RETURN count(m) AS peliculas` con `medir=5`. El operador inicial esperado es `NodeByLabelScan`.
+- **2.1** `PROFILE MATCH (m:Movie) WHERE m.year >= 1990 AND m.year <= 1999 RETURN count(m) AS peliculas` con `medir=20`. El operador inicial esperado es `NodeByLabelScan`.
 - **2.2**
   - `CREATE INDEX movie_year_range IF NOT EXISTS FOR (m:Movie) ON (m.year)`;
   - `CALL db.awaitIndexes()`;
-  - el mismo PROFILE con `medir=5`, donde se espera `NodeIndexSeekByRange`;
+  - el mismo PROFILE con `medir=20`, donde se espera `NodeIndexSeekByRange`;
   - el factor de mejora (db hits y tiempo), que lo calcula el informe a partir de los dos JSON.
 - **2.3**
   - `EXPLAIN` y `PROFILE` de la consulta de rango: runtime desde los argumentos del plan, sin Eager;

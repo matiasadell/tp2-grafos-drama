@@ -1,0 +1,15 @@
+{
+  "id": "2.0d_borrar_ratingNorm",
+  "sentencia": "// Se borra ratingNorm (lo escribe el 2.4) para que la verificación sea de esta corrida.\nMATCH ()-[r:RATED]->() WHERE r.ratingNorm IS NOT NULL\nCALL (r) { REMOVE r.ratingNorm } IN TRANSACTIONS OF 10000 ROWS",
+  "filas": 0,
+  "tipo_consulta": "w",
+  "contadores": {
+    "properties_set": 100004
+  },
+  "result_available_after_ms": 1650,
+  "result_consumed_after_ms": 0,
+  "tiempo_pared_s": 1.654,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

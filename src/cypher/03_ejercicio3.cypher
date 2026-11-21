@@ -33,7 +33,8 @@ RETURN graphName AS proyeccionLiberada;
 CALL gds.graph.project(
   'califW',
   ['User', 'Movie'],
-  {RATED: {orientation: 'UNDIRECTED', properties: 'rating'}}
+  {RATED: {orientation: 'UNDIRECTED', properties: 'rating'}},
+  {readConcurrency: 1}  // carga con un solo hilo: ids internos estables => muestreo reproducible
 )
 YIELD graphName, nodeCount, relationshipCount
 RETURN graphName, nodeCount, relationshipCount;

@@ -6,7 +6,8 @@
 // Se ejecuta en la app Query (pegar el archivo completo) o con el runner:
 //   python -m src.tp2.run_cypher src/cypher/01_ejercicio1.cypher
 // Reejecutable: arranca liberando la proyección y la propiedad que escribe.
-// Semilla 42 en todo lo que la acepta (samplingSeed / randomSeed).
+// Semilla 42 en todo lo que la acepta (samplingSeed / randomSeed). Betweenness, LPA y KNN
+// corren con concurrency 1: con varios hilos el muestreo/orden no es reproducible.
 // Decisiones (ver informe):
 //   - betweenness SIN peso: GDS interpreta el peso como costo/distancia,
 //     así que un rating alto "alejaría" a los nodos (semántica inversa);
@@ -33,7 +34,8 @@ RETURN count(n) AS propiedadesBorradas;
 CALL gds.graph.project(
   'califW',
   ['User', 'Movie'],
-  {RATED: {orientation: 'UNDIRECTED', properties: 'rating'}}
+  {RATED: {orientation: 'UNDIRECTED', properties: 'rating'}},
+  {readConcurrency: 1}  // carga con un solo hilo: ids internos estables => muestreo reproducible
 )
 YIELD graphName, nodeCount, relationshipCount, projectMillis
 RETURN graphName, nodeCount, relationshipCount, projectMillis;
@@ -42,7 +44,7 @@ RETURN graphName, nodeCount, relationshipCount, projectMillis;
 // 1.2 Intermediación (betweenness) con muestreo — top 10
 // ---------------------------------------------------------------------
 // @paso 1.2_betweenness_top10
-CALL gds.betweenness.stream('califW', {samplingSize: 1000, samplingSeed: 42})
+CALL gds.betweenness.stream('califW', {samplingSize: 1000, samplingSeed: 42, concurrency: 1})
 YIELD nodeId, score
 WITH gds.util.asNode(nodeId) AS n, score
 RETURN labels(n)[0] AS tipo,
@@ -121,7 +123,7 @@ LIMIT 10;
 // 1.5 Betweenness (punto 1.2) en modos stream, stats y write
 // ---------------------------------------------------------------------
 // @paso 1.5a_betweenness_stream
-CALL gds.betweenness.stream('califW', {samplingSize: 1000, samplingSeed: 42})
+CALL gds.betweenness.stream('califW', {samplingSize: 1000, samplingSeed: 42, concurrency: 1})
 YIELD nodeId, score
 WITH gds.util.asNode(nodeId) AS n, score
 RETURN labels(n)[0] AS tipo,
@@ -131,13 +133,13 @@ ORDER BY betweenness DESC, nodo ASC
 LIMIT 10;
 
 // @paso 1.5b_betweenness_stats
-CALL gds.betweenness.stats('califW', {samplingSize: 1000, samplingSeed: 42})
+CALL gds.betweenness.stats('califW', {samplingSize: 1000, samplingSeed: 42, concurrency: 1})
 YIELD centralityDistribution, preProcessingMillis, computeMillis, postProcessingMillis
 RETURN centralityDistribution, preProcessingMillis, computeMillis, postProcessingMillis;
 
 // @paso 1.5c_betweenness_write
 // Persiste el puntaje en la base como propiedad de nodo 'betweenness'.
-CALL gds.betweenness.write('califW', {samplingSize: 1000, samplingSeed: 42, writeProperty: 'betweenness'})
+CALL gds.betweenness.write('califW', {samplingSize: 1000, samplingSeed: 42, concurrency: 1, writeProperty: 'betweenness'})
 YIELD nodePropertiesWritten, centralityDistribution, computeMillis, writeMillis
 RETURN 'betweenness' AS propiedadEscrita, nodePropertiesWritten, computeMillis, writeMillis, centralityDistribution;
 

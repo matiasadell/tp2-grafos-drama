@@ -4,9 +4,9 @@
   "filas": 0,
   "tipo_consulta": "r",
   "contadores": {},
-  "result_available_after_ms": 10,
+  "result_available_after_ms": 9,
   "result_consumed_after_ms": 0,
-  "tiempo_pared_s": 0.012,
+  "tiempo_pared_s": 0.011,
   "plan_tipo": "EXPLAIN",
   "plan_resumen": {
     "runtime": "PIPELINED",

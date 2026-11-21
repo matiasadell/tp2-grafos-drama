@@ -1,12 +1,12 @@
 {
   "id": "1.5c_betweenness_write",
-  "sentencia": "// Persiste el puntaje en la base como propiedad de nodo 'betweenness'.\nCALL gds.betweenness.write('califW', {samplingSize: 1000, samplingSeed: 42, writeProperty: 'betweenness'})\nYIELD nodePropertiesWritten, centralityDistribution, computeMillis, writeMillis\nRETURN 'betweenness' AS propiedadEscrita, nodePropertiesWritten, computeMillis, writeMillis, centralityDistribution",
+  "sentencia": "// Persiste el puntaje en la base como propiedad de nodo 'betweenness'.\nCALL gds.betweenness.write('califW', {samplingSize: 1000, samplingSeed: 42, concurrency: 1, writeProperty: 'betweenness'})\nYIELD nodePropertiesWritten, centralityDistribution, computeMillis, writeMillis\nRETURN 'betweenness' AS propiedadEscrita, nodePropertiesWritten, computeMillis, writeMillis, centralityDistribution",
   "filas": 1,
   "tipo_consulta": "rw",
   "contadores": {},
   "result_available_after_ms": 56,
-  "result_consumed_after_ms": 2486,
-  "tiempo_pared_s": 2.545,
+  "result_consumed_after_ms": 4254,
+  "tiempo_pared_s": 4.314,
   "plan_tipo": null,
   "plan_resumen": null,
   "plan": null

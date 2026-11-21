@@ -1,50 +1,50 @@
 {
   "script": "src\\cypher\\00_parte_comun.cypher",
-  "inicio": "2026-11-21T17:06:20",
+  "inicio": "2026-11-21T17:22:09",
   "pasos": [
     {
       "id": "C.1a_nodos_por_etiqueta",
       "estado": "ok",
       "filas": 6,
-      "tiempo_pared_s": 0.081
+      "tiempo_pared_s": 0.051
     },
     {
       "id": "C.1b_nodos_por_combinacion",
       "estado": "ok",
       "filas": 6,
-      "tiempo_pared_s": 0.061
+      "tiempo_pared_s": 0.029
     },
     {
       "id": "C.2_relaciones_por_tipo",
       "estado": "ok",
       "filas": 4,
-      "tiempo_pared_s": 0.126
+      "tiempo_pared_s": 0.058
     },
     {
       "id": "C.3_totales",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.125
+      "tiempo_pared_s": 0.052
     },
     {
       "id": "C.4_top3_mas_calificadas",
       "estado": "ok",
       "filas": 3,
-      "tiempo_pared_s": 0.449
+      "tiempo_pared_s": 0.253
     },
     {
       "id": "C.5_pelicula_ancla",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.294
+      "tiempo_pared_s": 0.103
     },
     {
       "id": "C.6_recomendacion_base",
       "estado": "ok",
       "filas": 10,
-      "tiempo_pared_s": 0.579
+      "tiempo_pared_s": 0.341
     }
   ],
-  "fin": "2026-11-21T17:06:22",
+  "fin": "2026-11-21T17:22:10",
   "estado": "ok"
 }

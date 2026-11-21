@@ -6,9 +6,9 @@
   "contadores": {
     "properties_set": 100004
   },
-  "result_available_after_ms": 1650,
+  "result_available_after_ms": 1008,
   "result_consumed_after_ms": 0,
-  "tiempo_pared_s": 1.654,
+  "tiempo_pared_s": 1.01,
   "plan_tipo": null,
   "plan_resumen": null,
   "plan": null

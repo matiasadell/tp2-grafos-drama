@@ -1,12 +1,12 @@
 {
   "id": "1.1_proyeccion_califW",
-  "sentencia": "// UNDIRECTED (indicación de la cátedra): GDS guarda cada relación en los dos\n// sentidos, así que relationshipCount es el doble de las [:RATED] de la base.\nCALL gds.graph.project(\n  'califW',\n  ['User', 'Movie'],\n  {RATED: {orientation: 'UNDIRECTED', properties: 'rating'}}\n)\nYIELD graphName, nodeCount, relationshipCount, projectMillis\nRETURN graphName, nodeCount, relationshipCount, projectMillis",
+  "sentencia": "// UNDIRECTED (indicación de la cátedra): GDS guarda cada relación en los dos\n// sentidos, así que relationshipCount es el doble de las [:RATED] de la base.\nCALL gds.graph.project(\n  'califW',\n  ['User', 'Movie'],\n  {RATED: {orientation: 'UNDIRECTED', properties: 'rating'}},\n  {readConcurrency: 1}  // carga con un solo hilo: ids internos estables => muestreo reproducible\n)\nYIELD graphName, nodeCount, relationshipCount, projectMillis\nRETURN graphName, nodeCount, relationshipCount, projectMillis",
   "filas": 1,
   "tipo_consulta": "r",
   "contadores": {},
-  "result_available_after_ms": 45,
-  "result_consumed_after_ms": 523,
-  "tiempo_pared_s": 0.57,
+  "result_available_after_ms": 18,
+  "result_consumed_after_ms": 93,
+  "tiempo_pared_s": 0.112,
   "plan_tipo": null,
   "plan_resumen": null,
   "plan": null

@@ -4,9 +4,9 @@
   "filas": 10,
   "tipo_consulta": "r",
   "contadores": {},
-  "result_available_after_ms": 314,
-  "result_consumed_after_ms": 261,
-  "tiempo_pared_s": 0.579,
+  "result_available_after_ms": 97,
+  "result_consumed_after_ms": 242,
+  "tiempo_pared_s": 0.341,
   "plan_tipo": null,
   "plan_resumen": null,
   "plan": null

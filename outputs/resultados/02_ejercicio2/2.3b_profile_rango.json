@@ -4,9 +4,9 @@
   "filas": 1,
   "tipo_consulta": "r",
   "contadores": {},
-  "result_available_after_ms": 2,
+  "result_available_after_ms": 1,
   "result_consumed_after_ms": 1,
-  "tiempo_pared_s": 0.007,
+  "tiempo_pared_s": 0.005,
   "plan_tipo": "PROFILE",
   "plan_resumen": {
     "runtime": "PIPELINED",
@@ -20,7 +20,7 @@
       "NodeIndexSeekByRange"
     ],
     "db_hits_total": 2203,
-    "tiempo_operadores_ms": 0.442,
+    "tiempo_operadores_ms": 0.35,
     "tiene_eager": false,
     "eager": [],
     "nota_eager": "Los pasos se cuentan en preorden desde la raíz (1 = ProduceResults/raíz). EagerAggregation no es una barrera Eager de lectura/escritura y se excluye."
@@ -30,9 +30,9 @@
       "GlobalMemory": 480,
       "planner-impl": "IDP",
       "Memory": 0,
-      "string-representation": "Cypher 25\r\n\r\nPlanner COST\r\n\r\nRuntime PIPELINED\r\n\r\nRuntime version 2026.09.0\r\n\r\nBatch size 128\r\n\r\n+-----------------------+----+---------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+---------------------+\r\n| Operator              | Id | Details                                                                   | Estimated Rows | Rows | DB Hits | Memory (Bytes) | Page Cache Hits/Misses | Time (ms) | Pipeline            | Indexes Used        |\r\n+-----------------------+----+---------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+---------------------+\r\n| +ProduceResults       |  0 | peliculas                                                                 |              1 |    1 |       0 |              0 |                    0/0 |     0,038 | In Pipeline 1       |                     |\r\n| |                     +----+---------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+---------------------+\r\n| +EagerAggregation     |  1 | count(m) AS peliculas                                                     |              1 |    1 |       0 |             40 |                        |           |                     |                     |\r\n| |                     +----+---------------------------------------------------------------------------+----------------+------+---------+----------------+                        |           |                     +---------------------+\r\n| +NodeIndexSeekByRange |  2 | RANGE INDEX m:Movie(year) WHERE year >= $autoint_0 AND year <= $autoint_1 |            223 | 2202 |    2203 |            376 |                    8/0 |     0,404 | Fused in Pipeline 0 | movie_year_range: 1 |\r\n+-----------------------+----+---------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+---------------------+\r\n\r\nTotal database accesses: 2203, total allocated memory: 480\r\n",
+      "string-representation": "Cypher 25\r\n\r\nPlanner COST\r\n\r\nRuntime PIPELINED\r\n\r\nRuntime version 2026.09.0\r\n\r\nBatch size 128\r\n\r\n+-----------------------+----+---------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+---------------------+\r\n| Operator              | Id | Details                                                                   | Estimated Rows | Rows | DB Hits | Memory (Bytes) | Page Cache Hits/Misses | Time (ms) | Pipeline            | Indexes Used        |\r\n+-----------------------+----+---------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+---------------------+\r\n| +ProduceResults       |  0 | peliculas                                                                 |              1 |    1 |       0 |              0 |                    0/0 |     0,013 | In Pipeline 1       |                     |\r\n| |                     +----+---------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+---------------------+\r\n| +EagerAggregation     |  1 | count(m) AS peliculas                                                     |              1 |    1 |       0 |             40 |                        |           |                     |                     |\r\n| |                     +----+---------------------------------------------------------------------------+----------------+------+---------+----------------+                        |           |                     +---------------------+\r\n| +NodeIndexSeekByRange |  2 | RANGE INDEX m:Movie(year) WHERE year >= $autoint_0 AND year <= $autoint_1 |            223 | 2202 |    2203 |            376 |                    8/0 |     0,337 | Fused in Pipeline 0 | movie_year_range: 1 |\r\n+-----------------------+----+---------------------------------------------------------------------------+----------------+------+---------+----------------+------------------------+-----------+---------------------+---------------------+\r\n\r\nTotal database accesses: 2203, total allocated memory: 480\r\n",
       "runtime": "PIPELINED",
-      "Time": 37800,
+      "Time": 12500,
       "runtime-impl": "PIPELINED",
       "version": "25",
       "DbHits": 0,
@@ -66,7 +66,7 @@
               "Details": "RANGE INDEX m:Movie(year) WHERE year >= $autoint_0 AND year <= $autoint_1",
               "PipelineInfo": "Fused in Pipeline 0",
               "Memory": 376,
-              "Time": 403882,
+              "Time": 337382,
               "Id": 2,
               "UsedIndexes": "movie_year_range: 1",
               "EstimatedRows": 223.42601941747571,
@@ -81,7 +81,7 @@
               "m"
             ],
             "operatorType": "NodeIndexSeekByRange@neo4j",
-            "time": 403882,
+            "time": 337382,
             "rows": 2202,
             "pageCacheHitRatio": 1.0,
             "pageCacheHits": 8
@@ -100,7 +100,7 @@
       "peliculas"
     ],
     "operatorType": "ProduceResults@neo4j",
-    "time": 37800,
+    "time": 12500,
     "rows": 1,
     "pageCacheHitRatio": 0.0,
     "pageCacheHits": 0

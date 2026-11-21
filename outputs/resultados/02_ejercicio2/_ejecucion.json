@@ -1,104 +1,104 @@
 {
   "script": "src\\cypher\\02_ejercicio2.cypher",
-  "inicio": "2026-11-21T17:08:18",
+  "inicio": "2026-11-21T17:22:31",
   "pasos": [
     {
       "id": "2.0a_borrar_indice_del_dump",
       "estado": "ok",
       "filas": 0,
-      "tiempo_pared_s": 0.005
+      "tiempo_pared_s": 0.004
     },
     {
       "id": "2.0b_borrar_indice_propio",
       "estado": "ok",
       "filas": 0,
-      "tiempo_pared_s": 0.011
+      "tiempo_pared_s": 0.009
     },
     {
       "id": "2.0c_control_sin_indice_year",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.025
+      "tiempo_pared_s": 0.021
     },
     {
       "id": "2.0d_borrar_ratingNorm",
       "estado": "ok",
       "filas": 0,
-      "tiempo_pared_s": 1.654
+      "tiempo_pared_s": 1.01
     },
     {
       "id": "2.1_profile_sin_indice",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.427
+      "tiempo_pared_s": 0.296
     },
     {
       "id": "2.2a_crear_indice_rango",
       "estado": "ok",
       "filas": 0,
-      "tiempo_pared_s": 0.018
+      "tiempo_pared_s": 0.009
     },
     {
       "id": "2.2b_esperar_indice",
       "estado": "ok",
       "filas": 0,
-      "tiempo_pared_s": 0.241
+      "tiempo_pared_s": 0.121
     },
     {
       "id": "2.2c_control_indice",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.035
+      "tiempo_pared_s": 0.017
     },
     {
       "id": "2.2_profile_con_indice",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.218
+      "tiempo_pared_s": 0.138
     },
     {
       "id": "2.3a_explain_rango",
       "estado": "ok",
       "filas": 0,
-      "tiempo_pared_s": 0.012
+      "tiempo_pared_s": 0.011
     },
     {
       "id": "2.3b_profile_rango",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.007
+      "tiempo_pared_s": 0.005
     },
     {
       "id": "2.3c_explain_escritura_2_4",
       "estado": "ok",
       "filas": 0,
-      "tiempo_pared_s": 0.052
+      "tiempo_pared_s": 0.042
     },
     {
       "id": "2.4a_escritura_ratingNorm",
       "estado": "ok",
       "filas": 0,
-      "tiempo_pared_s": 1.02
+      "tiempo_pared_s": 0.943
     },
     {
       "id": "2.4b_verificacion_cobertura",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.104
+      "tiempo_pared_s": 0.099
     },
     {
       "id": "2.4c_verificacion_por_usuario",
       "estado": "ok",
       "filas": 5,
-      "tiempo_pared_s": 0.131
+      "tiempo_pared_s": 0.13
     },
     {
       "id": "2.4d_ejemplos_pelicula_ancla",
       "estado": "ok",
       "filas": 5,
-      "tiempo_pared_s": 0.185
+      "tiempo_pared_s": 0.115
     }
   ],
-  "fin": "2026-11-21T17:08:24",
+  "fin": "2026-11-21T17:22:36",
   "estado": "ok"
 }

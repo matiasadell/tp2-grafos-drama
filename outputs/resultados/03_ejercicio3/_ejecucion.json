@@ -1,84 +1,84 @@
 {
   "script": "src\\cypher\\03_ejercicio3.cypher",
-  "inicio": "2026-11-21T17:11:12",
+  "inicio": "2026-11-21T17:22:37",
   "pasos": [
     {
       "id": "3.0a_limpiar_modelo",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.008
+      "tiempo_pared_s": 0.018
     },
     {
       "id": "3.0b_limpiar_pipeline",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.006
+      "tiempo_pared_s": 0.018
     },
     {
       "id": "3.0c_limpiar_califW",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.014
+      "tiempo_pared_s": 0.026
     },
     {
       "id": "3.0d_limpiar_califLP",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.012
+      "tiempo_pared_s": 0.01
     },
     {
       "id": "3.0e_proyeccion_califW",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.178
+      "tiempo_pared_s": 0.114
     },
     {
       "id": "3.1_node2vec_5_nodos",
       "estado": "ok",
       "filas": 5,
-      "tiempo_pared_s": 29.228
+      "tiempo_pared_s": 31.503
     },
     {
       "id": "3.2a_subgrafo_entrenamiento",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.193
+      "tiempo_pared_s": 0.304
     },
     {
       "id": "3.2b_subgrafo_conteo_en_la_base",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.07
+      "tiempo_pared_s": 0.168
     },
     {
       "id": "3.3a_pipeline_crear",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.005
+      "tiempo_pared_s": 0.017
     },
     {
       "id": "3.3b_pipeline_paso_node2vec",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.005
+      "tiempo_pared_s": 0.021
     },
     {
       "id": "3.3c_pipeline_feature_hadamard",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.004
+      "tiempo_pared_s": 0.017
     },
     {
       "id": "3.3d_pipeline_split",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.005
+      "tiempo_pared_s": 0.017
     },
     {
       "id": "3.3e_modelo_lr_penalty_0",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.004
+      "tiempo_pared_s": 0.019
     },
     {
       "id": "3.3f_modelo_lr_penalty_001",
@@ -96,7 +96,7 @@
       "id": "3.3h_modelo_rf_10_arboles",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 0.004
+      "tiempo_pared_s": 0.019
     },
     {
       "id": "3.3i_modelo_rf_25_arboles",
@@ -108,21 +108,21 @@
       "id": "3.3j_entrenamiento",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 18.492
+      "tiempo_pared_s": 20.103
     },
     {
       "id": "3.3k_prediccion_top5",
       "estado": "ok",
       "filas": 5,
-      "tiempo_pared_s": 8.767
+      "tiempo_pared_s": 9.459
     },
     {
       "id": "3.3l_empates_en_probabilidad_maxima",
       "estado": "ok",
       "filas": 1,
-      "tiempo_pared_s": 8.644
+      "tiempo_pared_s": 9.014
     }
   ],
-  "fin": "2026-11-21T17:12:18",
+  "fin": "2026-11-21T17:23:48",
   "estado": "ok"
 }

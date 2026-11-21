@@ -32,7 +32,8 @@ Todo tiene que estar listo el 22/11/2026 a la noche. La entrega en el EVA cierra
 
   | Algoritmo | Parámetros |
   |---|---|
-  | Betweenness | `samplingSize: 1000`, `samplingSeed: 42`, sin peso |
+  | Proyección `califW` | `readConcurrency: 1` (ids internos estables entre corridas) |
+  | Betweenness | `samplingSize: 1000`, `samplingSeed: 42`, `concurrency: 1`, sin peso (con varios hilos el muestreo no es reproducible; ver Task 11) |
   | Label Propagation | `relationshipWeightProperty: 'rating'`, `concurrency: 1` |
   | FastRP | `embeddingDimension: 128`, `randomSeed: 42`, `relationshipWeightProperty: 'rating'` |
   | KNN | `nodeLabels: ['User']`, `topK: 10`, `randomSeed: 42`, `concurrency: 1`, `sampleRate: 1.0`, `deltaThreshold: 0.0` |

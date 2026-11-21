@@ -1,12 +1,12 @@
 {
   "id": "1.0a_limpiar_proyeccion",
   "sentencia": "CALL gds.graph.drop('califW', false) YIELD graphName\nRETURN graphName AS proyeccionLiberada",
-  "filas": 0,
+  "filas": 1,
   "tipo_consulta": "r",
   "contadores": {},
-  "result_available_after_ms": 45,
-  "result_consumed_after_ms": 151,
-  "tiempo_pared_s": 0.199,
+  "result_available_after_ms": 1,
+  "result_consumed_after_ms": 7,
+  "tiempo_pared_s": 0.009,
   "plan_tipo": null,
   "plan_resumen": null,
   "plan": null

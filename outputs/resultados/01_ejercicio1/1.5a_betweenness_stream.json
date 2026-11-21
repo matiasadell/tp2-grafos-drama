@@ -1,12 +1,12 @@
 {
   "id": "1.5a_betweenness_stream",
-  "sentencia": "CALL gds.betweenness.stream('califW', {samplingSize: 1000, samplingSeed: 42})\nYIELD nodeId, score\nWITH gds.util.asNode(nodeId) AS n, score\nRETURN labels(n)[0] AS tipo,\n       coalesce(n.title, n.name) AS nodo,\n       score AS betweenness\nORDER BY betweenness DESC, nodo ASC\nLIMIT 10",
+  "sentencia": "CALL gds.betweenness.stream('califW', {samplingSize: 1000, samplingSeed: 42, concurrency: 1})\nYIELD nodeId, score\nWITH gds.util.asNode(nodeId) AS n, score\nRETURN labels(n)[0] AS tipo,\n       coalesce(n.title, n.name) AS nodo,\n       score AS betweenness\nORDER BY betweenness DESC, nodo ASC\nLIMIT 10",
   "filas": 10,
   "tipo_consulta": "r",
   "contadores": {},
-  "result_available_after_ms": 3,
-  "result_consumed_after_ms": 1787,
-  "tiempo_pared_s": 1.793,
+  "result_available_after_ms": 1,
+  "result_consumed_after_ms": 4217,
+  "tiempo_pared_s": 4.22,
   "plan_tipo": null,
   "plan_resumen": null,
   "plan": null

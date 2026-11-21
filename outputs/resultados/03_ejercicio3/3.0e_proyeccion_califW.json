@@ -1,0 +1,13 @@
+{
+  "id": "3.0e_proyeccion_califW",
+  "sentencia": "// Misma proyección del Ej. 1 (Usuario–Película, ponderada por rating, UNDIRECTED).\nCALL gds.graph.project(\n  'califW',\n  ['User', 'Movie'],\n  {RATED: {orientation: 'UNDIRECTED', properties: 'rating'}}\n)\nYIELD graphName, nodeCount, relationshipCount\nRETURN graphName, nodeCount, relationshipCount",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 2,
+  "result_consumed_after_ms": 173,
+  "tiempo_pared_s": 0.178,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

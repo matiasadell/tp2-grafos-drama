@@ -1,0 +1,13 @@
+{
+  "id": "3.0b_limpiar_pipeline",
+  "sentencia": "CALL gds.pipeline.drop('pipeLP_drama', false) YIELD pipelineName\nRETURN pipelineName AS pipelineLiberado",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 2,
+  "result_consumed_after_ms": 1,
+  "tiempo_pared_s": 0.006,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

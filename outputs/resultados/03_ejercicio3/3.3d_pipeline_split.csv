@@ -1,0 +1,2 @@
+splitConfig
+"{""negativeSamplingRatio"": 1.0, ""trainFraction"": 0.1, ""testFraction"": 0.1, ""validationFolds"": 3}"

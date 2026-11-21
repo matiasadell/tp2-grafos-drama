@@ -1,0 +1,13 @@
+{
+  "id": "3.3b_pipeline_paso_node2vec",
+  "sentencia": "// node2vec como PASO del pipeline: GDS lo calcula sobre el grafo de entrenamiento\n// (feature-input), así las aristas de test no se filtran al embedding.\nCALL gds.beta.pipeline.linkPrediction.addNodeProperty('pipeLP_drama', 'node2vec', {\n  mutateProperty: 'emb',\n  embeddingDimension: 128,\n  walkLength: 40,\n  walksPerNode: 10,\n  iterations: 1,\n  relationshipWeightProperty: 'rating',\n  randomSeed: 42,\n  concurrency: 1\n})\nYIELD nodePropertySteps\nRETURN size(nodePropertySteps) AS pasosDePropiedad",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 2,
+  "result_consumed_after_ms": 1,
+  "tiempo_pared_s": 0.005,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

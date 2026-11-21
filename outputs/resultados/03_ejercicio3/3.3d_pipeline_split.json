@@ -1,0 +1,13 @@
+{
+  "id": "3.3d_pipeline_split",
+  "sentencia": "CALL gds.beta.pipeline.linkPrediction.configureSplit('pipeLP_drama', {\n  testFraction: 0.1,\n  trainFraction: 0.1,\n  validationFolds: 3,\n  negativeSamplingRatio: 1.0\n})\nYIELD splitConfig\nRETURN splitConfig",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 2,
+  "result_consumed_after_ms": 1,
+  "tiempo_pared_s": 0.005,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

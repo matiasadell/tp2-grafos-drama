@@ -1,0 +1,13 @@
+{
+  "id": "3.2b_subgrafo_conteo_en_la_base",
+  "sentencia": "// El mismo subgrafo contado en la base (las [:RATED] reales, sin duplicar por UNDIRECTED).\nMATCH (u:User)-[r:RATED]->(m:Movie)\nWHERE COUNT { (m)<-[:RATED]-(:User) } >= 20\nRETURN count(DISTINCT u) AS usuarios,\n       count(DISTINCT m) AS peliculas,\n       count(DISTINCT u) + count(DISTINCT m) AS nodos,\n       count(r) AS relacionesRated",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 2,
+  "result_consumed_after_ms": 65,
+  "tiempo_pared_s": 0.07,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

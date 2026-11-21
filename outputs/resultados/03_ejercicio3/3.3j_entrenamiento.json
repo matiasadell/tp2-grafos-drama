@@ -1,0 +1,13 @@
+{
+  "id": "3.3j_entrenamiento",
+  "sentencia": "// Predice [:RATED] User→Movie. Métrica AUCPR (adecuada para el desbalance de clases).\nCALL gds.beta.pipeline.linkPrediction.train('califLP', {\n  pipeline: 'pipeLP_drama',\n  modelName: 'modeloLP_drama',\n  targetRelationshipType: 'RATED',\n  sourceNodeLabel: 'User',\n  targetNodeLabel: 'Movie',\n  metrics: ['AUCPR'],\n  randomSeed: 42\n})\nYIELD modelInfo, modelSelectionStats, trainMillis\nRETURN modelInfo.bestParameters AS modeloGanador,\n       modelInfo.metrics.AUCPR.test AS aucprTest,\n       modelInfo.metrics.AUCPR.outerTrain AS aucprOuterTrain,\n       modelInfo.metrics.AUCPR.validation AS aucprValidacion,\n       modelInfo.metrics.AUCPR.train AS aucprTrain,\n       modelSelectionStats,\n       trainMillis",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 2,
+  "result_consumed_after_ms": 18488,
+  "tiempo_pared_s": 18.492,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

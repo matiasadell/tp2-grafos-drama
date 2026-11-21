@@ -1,0 +1,13 @@
+{
+  "id": "3.3l_empates_en_probabilidad_maxima",
+  "sentencia": "// Contexto del top 5: cuántos pares nuevos reciben probabilidad >= 0.999 (todos los árboles\n// del Random Forest votan \"sí\"). Búsqueda exhaustiva con umbral.\nCALL gds.beta.pipeline.linkPrediction.predict.stream('califLP', {\n  modelName: 'modeloLP_drama',\n  topN: 1000000,\n  threshold: 0.999,\n  concurrency: 1\n})\nYIELD node1, node2, probability\nRETURN count(*) AS paresConProbabilidadMaxima,\n       count(DISTINCT CASE WHEN gds.util.asNode(node1):User THEN node1 ELSE node2 END) AS usuariosDistintos",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 38,
+  "result_consumed_after_ms": 8603,
+  "tiempo_pared_s": 8.644,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

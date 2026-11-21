@@ -1,0 +1,13 @@
+{
+  "id": "3.1_node2vec_5_nodos",
+  "sentencia": "// 5 nodos elegidos de forma determinista: la película ancla, la película más\n// calificada que no es la ancla y los 3 usuarios con más calificaciones.\nCALL () {\n  MATCH (:Genre {name: 'Drama'})<-[:IN_GENRE]-(m:Movie)\n  WITH m, COUNT { (m)<-[:RATED]-(:User) } AS c\n  ORDER BY c DESC, m.title ASC\n  LIMIT 1\n  RETURN m AS ancla\n}\nCALL (ancla) {\n  MATCH (m:Movie) WHERE m <> ancla\n  WITH m, COUNT { (m)<-[:RATED]-(:User) } AS c\n  ORDER BY c DESC, m.title ASC\n  LIMIT 1\n  RETURN m AS otraPelicula\n}\nCALL () {\n  MATCH (u:User)\n  WITH u, COUNT { (u)-[:RATED]->(:Movie) } AS c\n  ORDER BY c DESC, u.name ASC\n  LIMIT 3\n  RETURN collect(u) AS usuarios\n}\nWITH [ancla, otraPelicula] + usuarios AS elegidos\nCALL gds.node2vec.stream('califW', {\n  embeddingDimension: 128,\n  walkLength: 40,\n  walksPerNode: 10,\n  iterations: 1,\n  relationshipWeightProperty: 'rating',\n  randomSeed: 42,\n  concurrency: 1\n})\nYIELD nodeId, embedding\nWITH elegidos, gds.util.asNode(nodeId) AS n, embedding\nWHERE n IN elegidos\nRETURN labels(n)[0] AS tipo,\n       coalesce(n.title, n.name) AS nodo,\n       size(embedding) AS dimension,\n       embedding\nORDER BY tipo ASC, nodo ASC",
+  "filas": 5,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 2,
+  "result_consumed_after_ms": 29222,
+  "tiempo_pared_s": 29.228,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

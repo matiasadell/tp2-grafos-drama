@@ -1,0 +1,13 @@
+{
+  "id": "3.3f_modelo_lr_penalty_001",
+  "sentencia": "CALL gds.beta.pipeline.linkPrediction.addLogisticRegression('pipeLP_drama', {penalty: 0.01})\nYIELD parameterSpace\nRETURN size(parameterSpace.LogisticRegression) AS configuracionesLR",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 1,
+  "result_consumed_after_ms": 0,
+  "tiempo_pared_s": 0.004,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

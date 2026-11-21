@@ -1,0 +1,13 @@
+{
+  "id": "3.3a_pipeline_crear",
+  "sentencia": "CALL gds.beta.pipeline.linkPrediction.create('pipeLP_drama') YIELD name\nRETURN name AS pipeline",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 2,
+  "result_consumed_after_ms": 1,
+  "tiempo_pared_s": 0.005,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

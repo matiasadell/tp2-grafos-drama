@@ -1,0 +1,13 @@
+{
+  "id": "3.0d_limpiar_califLP",
+  "sentencia": "CALL gds.graph.drop('califLP', false) YIELD graphName\nRETURN graphName AS proyeccionLiberada",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 3,
+  "result_consumed_after_ms": 8,
+  "tiempo_pared_s": 0.012,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

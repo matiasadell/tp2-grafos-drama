@@ -1,0 +1,13 @@
+{
+  "id": "3.3c_pipeline_feature_hadamard",
+  "sentencia": "CALL gds.beta.pipeline.linkPrediction.addFeature('pipeLP_drama', 'hadamard', {nodeProperties: ['emb']})\nYIELD featureSteps\nRETURN featureSteps",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 1,
+  "result_consumed_after_ms": 1,
+  "tiempo_pared_s": 0.004,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

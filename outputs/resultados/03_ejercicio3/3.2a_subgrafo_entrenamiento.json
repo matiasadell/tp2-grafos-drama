@@ -1,0 +1,13 @@
+{
+  "id": "3.2a_subgrafo_entrenamiento",
+  "sentencia": "// Proyección Cypher acotada (NOTAS) a las películas con >= 20 calificaciones.\nMATCH (u:User)-[r:RATED]->(m:Movie)\nWHERE COUNT { (m)<-[:RATED]-(:User) } >= 20\nWITH gds.graph.project(\n  'califLP', u, m,\n  {\n    sourceNodeLabels: 'User',\n    targetNodeLabels: 'Movie',\n    relationshipType: 'RATED',\n    relationshipProperties: {rating: r.rating}\n  },\n  {undirectedRelationshipTypes: ['RATED']}\n) AS g\nRETURN g.graphName AS grafo, g.nodeCount AS nodeCount, g.relationshipCount AS relationshipCount",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 1,
+  "result_consumed_after_ms": 188,
+  "tiempo_pared_s": 0.193,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

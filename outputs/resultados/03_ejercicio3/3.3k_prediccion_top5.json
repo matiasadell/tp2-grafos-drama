@@ -1,0 +1,13 @@
+{
+  "id": "3.3k_prediccion_top5",
+  "sentencia": "// Los 5 pares usuario→película (todavía sin [:RATED]) con mayor probabilidad predicha.\n// concurrency 1: el Random Forest devuelve la fracción de árboles que votan \"sí\", así que\n// hay empates en 1.0; con un solo hilo la elección entre empatados es reproducible.\nCALL gds.beta.pipeline.linkPrediction.predict.stream('califLP', {\n  modelName: 'modeloLP_drama',\n  topN: 5,\n  concurrency: 1\n})\nYIELD node1, node2, probability\nWITH gds.util.asNode(node1) AS a, gds.util.asNode(node2) AS b, probability\nWITH CASE WHEN a:User THEN a ELSE b END AS u,\n     CASE WHEN a:User THEN b ELSE a END AS m,\n     probability\nRETURN u.name AS usuario,\n       m.title AS pelicula,\n       m.year AS anio,\n       probability AS probabilidad,\n       EXISTS { (u)-[:RATED]->(m) } AS yaExisteEnLaBase\nORDER BY probabilidad DESC, usuario ASC, pelicula ASC",
+  "filas": 5,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 99,
+  "result_consumed_after_ms": 8665,
+  "tiempo_pared_s": 8.767,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

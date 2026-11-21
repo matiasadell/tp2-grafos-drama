@@ -1,0 +1,13 @@
+{
+  "id": "3.3h_modelo_rf_10_arboles",
+  "sentencia": "CALL gds.beta.pipeline.linkPrediction.addRandomForest('pipeLP_drama', {numberOfDecisionTrees: 10, maxDepth: 10})\nYIELD parameterSpace\nRETURN size(parameterSpace.RandomForest) AS configuracionesRF",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 2,
+  "result_consumed_after_ms": 0,
+  "tiempo_pared_s": 0.004,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

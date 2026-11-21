@@ -1,0 +1,26 @@
+{
+  "modelo": "PairRE",
+  "mrr": 0.10457960516214371,
+  "hits_at_10": 0.19208715596330275,
+  "hits_at_1": 0.05963302752293578,
+  "hits_at_3": 0.11754587155963303,
+  "escenario": "filtrado, ambos lados (head y tail), rank realista",
+  "tripletas": {
+    "total": 8719,
+    "entrenamiento": 6975,
+    "validacion": 872,
+    "test": 872
+  },
+  "entidades": 4052,
+  "relaciones": 2,
+  "config": {
+    "embedding_dim": 128,
+    "num_epochs": 100,
+    "random_seed": 42,
+    "split": [
+      0.8,
+      0.1,
+      0.1
+    ]
+  }
+}

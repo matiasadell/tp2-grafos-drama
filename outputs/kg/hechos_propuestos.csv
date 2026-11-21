@@ -1,0 +1,4 @@
+puesto_entre_no_drama,pelicula,relacion,genero,score,generos_actuales
+1,Vanilla Sky (2001),IN_GENRE,Drama,-2.568819522857666,"Mystery, Romance, Sci-Fi, Thriller"
+2,"African Queen, The (1951)",IN_GENRE,Drama,-2.592372179031372,"Adventure, Comedy, Romance, War"
+3,Devil in a Blue Dress (1995),IN_GENRE,Drama,-2.6086530685424805,"Crime, Film-Noir, Mystery, Thriller"

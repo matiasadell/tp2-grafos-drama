@@ -27,6 +27,16 @@ TP 2 de *Bases de Datos Orientadas a Grafos* (UCA, 2C 2026). Trabajo 2: Adell, G
   - Siempre el env conda `grafos-tp2`: `conda run -n grafos-tp2 python ...`, con kernel `grafos-tp2` para el notebook.
   - No tocar el env `tp2`.
   - Comandos de módulo desde la raíz, por ejemplo `python -m src.tp2.run_cypher src/cypher/01_ejercicio1.cypher`.
+  - ⚠️ La máquina tiene un `PYTHONPATH=D:\anaconda` global. Conviene invocar el intérprete del env directamente, sin ese valor, y con salida UTF-8: `env -u PYTHONPATH PYTHONIOENCODING=utf-8 /d/miniconda/envs/grafos-tp2/python.exe -m ...`.
+  - `conda run` no acepta argumentos con saltos de línea: para Python multilínea, usar un archivo o un heredoc con el intérprete del env.
+- **Comandos de punta a punta:**
+  - Scripts: `python -m src.tp2.run_cypher src/cypher/<script>.cypher`.
+  - Re-render de planes sin volver a ejecutar: `python -m src.tp2.planes outputs/resultados/02_ejercicio2`.
+  - Notebook: `jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.kernel_name=grafos-tp2 src/notebooks/ej3_4_pairre.ipynb`.
+  - Informe: `python -m src.tp2.build_informe`.
+  - Zip: `python -m src.tp2.armar_entrega`.
+- **Disco:** C: está casi lleno (≈0,3 GB libres al 21/11). El DBMS y los temporales viven en C:. Para instalar con pip, usar `--no-cache-dir` y `TEMP`/`TMP` apuntando a D:.
+- **Reproducibilidad GDS:** las proyecciones `califW` usan `readConcurrency: 1`. Betweenness, LPA, KNN, node2vec y la predicción de LP usan `concurrency: 1`: con varios hilos, la betweenness muestreada variaba entre corridas pese a la semilla (ver `docs/estado/verificacion_idempotencia.md`).
 - **Scripts `.cypher`** (`src/cypher/00..03`):
   - Cada sentencia va precedida por `// @paso <id> [medir=N]`. El `<id>` sigue la consigna (`1.2_betweenness_top10`, `2.1_profile_sin_indice`, `C.6_recomendacion_base`).
   - El runner usa el id como nombre de archivo de salida, y el informe lo referencia con `{{tabla:<script>/<id>}}` y `{{plan:<id>}}`.

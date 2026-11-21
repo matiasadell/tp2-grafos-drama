@@ -18,6 +18,7 @@ Se corrieron los 4 scripts en orden (00 → 01 → 02 → 03) **dos veces seguid
 | B | exit 0 (7 pasos) | exit 0 (12 pasos) | exit 0 (16 pasos) | exit 0 (20 pasos) |
 
 CSV comparados: 55 | idénticos (salvo *Millis y tolerancia relativa 1e-9): 55
+
 | Archivo | Diferencias | Máx. dif. relativa |
 |---|---|---|
 | (ninguno) | — | — |

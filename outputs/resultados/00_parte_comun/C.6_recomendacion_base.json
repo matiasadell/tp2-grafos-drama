@@ -1,0 +1,13 @@
+{
+  "id": "C.6_recomendacion_base",
+  "sentencia": "// Recomendación base (sin GDS): 10 películas para la ancla, con el patrón\n// (:Movie)<-[:RATED]-(:User)-[:RATED]->(rec:Movie), ordenadas por usuarios en común.\nCALL () {\n  MATCH (:Genre {name: 'Drama'})<-[:IN_GENRE]-(m:Movie)\n  WITH m, COUNT { (m)<-[:RATED]-(:User) } AS calificaciones\n  ORDER BY calificaciones DESC, m.title ASC\n  LIMIT 1\n  RETURN m AS ancla\n}\nMATCH (ancla)<-[:RATED]-(u:User)-[:RATED]->(rec:Movie)\nWHERE rec <> ancla\nRETURN ancla.title AS peliculaAncla,\n       rec.title AS recomendacion,\n       rec.year AS anio,\n       count(DISTINCT u) AS usuariosEnComun\nORDER BY usuariosEnComun DESC, recomendacion ASC\nLIMIT 10",
+  "filas": 10,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 314,
+  "result_consumed_after_ms": 261,
+  "tiempo_pared_s": 0.579,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

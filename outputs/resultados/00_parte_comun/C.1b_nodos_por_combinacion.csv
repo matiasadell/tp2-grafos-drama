@@ -1,0 +1,7 @@
+etiquetas,nodos
+"[""Actor"", ""Person""]",14956
+"[""Movie""]",9125
+"[""Director"", ""Person""]",3604
+"[""User""]",671
+"[""Actor"", ""Director"", ""Person""]",487
+"[""Genre""]",20

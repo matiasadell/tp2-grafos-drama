@@ -1,0 +1,13 @@
+{
+  "id": "C.1a_nodos_por_etiqueta",
+  "sentencia": "// Panorama (1/4): nodos por etiqueta. Un nodo :Person:Actor cuenta en las dos.\nMATCH (n)\nUNWIND labels(n) AS etiqueta\nRETURN etiqueta, count(*) AS nodos\nORDER BY nodos DESC, etiqueta ASC",
+  "filas": 6,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 55,
+  "result_consumed_after_ms": 23,
+  "tiempo_pared_s": 0.081,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

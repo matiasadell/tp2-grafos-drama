@@ -1,0 +1,13 @@
+{
+  "id": "C.4_top3_mas_calificadas",
+  "sentencia": "// Las 3 películas con más calificaciones (desempate por título).\nMATCH (m:Movie)<-[r:RATED]-(:User)\nRETURN m.title AS pelicula, m.year AS anio, count(r) AS calificaciones\nORDER BY calificaciones DESC, pelicula ASC\nLIMIT 3",
+  "filas": 3,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 112,
+  "result_consumed_after_ms": 333,
+  "tiempo_pared_s": 0.449,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

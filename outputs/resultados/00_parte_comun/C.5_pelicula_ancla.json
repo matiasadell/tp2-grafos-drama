@@ -1,0 +1,13 @@
+{
+  "id": "C.5_pelicula_ancla",
+  "sentencia": "// Película ancla del eje Drama.\nMATCH (:Genre {name: 'Drama'})<-[:IN_GENRE]-(m:Movie)\nWITH m, COUNT { (m)<-[:RATED]-(:User) } AS calificaciones\nRETURN m.title AS peliculaAncla, m.year AS anio, calificaciones\nORDER BY calificaciones DESC, peliculaAncla ASC\nLIMIT 1",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 213,
+  "result_consumed_after_ms": 79,
+  "tiempo_pared_s": 0.294,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

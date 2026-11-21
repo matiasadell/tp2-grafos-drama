@@ -1,0 +1,13 @@
+{
+  "id": "C.3_totales",
+  "sentencia": "// Panorama (4/4): totales contra lo que dice la consigna (28.863 nodos y 166.261 relaciones).\nMATCH (n)\nWITH count(n) AS nodos\nMATCH ()-[r]->()\nWITH nodos, count(r) AS relaciones\nRETURN nodos, relaciones, (nodos = 28863 AND relaciones = 166261) AS coincideConConsigna",
+  "filas": 1,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 90,
+  "result_consumed_after_ms": 33,
+  "tiempo_pared_s": 0.125,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

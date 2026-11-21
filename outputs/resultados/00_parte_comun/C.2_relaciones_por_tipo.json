@@ -1,0 +1,13 @@
+{
+  "id": "C.2_relaciones_por_tipo",
+  "sentencia": "// Panorama (3/4): relaciones por tipo.\nMATCH ()-[r]->()\nRETURN type(r) AS tipo, count(*) AS relaciones\nORDER BY relaciones DESC, tipo ASC",
+  "filas": 4,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 56,
+  "result_consumed_after_ms": 66,
+  "tiempo_pared_s": 0.126,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

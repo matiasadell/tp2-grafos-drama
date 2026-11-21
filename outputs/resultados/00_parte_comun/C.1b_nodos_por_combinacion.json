@@ -1,0 +1,13 @@
+{
+  "id": "C.1b_nodos_por_combinacion",
+  "sentencia": "// Panorama (2/4): nodos por combinación exacta de etiquetas (suma = total de nodos).\nMATCH (n)\nRETURN labels(n) AS etiquetas, count(*) AS nodos\nORDER BY nodos DESC",
+  "filas": 6,
+  "tipo_consulta": "r",
+  "contadores": {},
+  "result_available_after_ms": 37,
+  "result_consumed_after_ms": 19,
+  "tiempo_pared_s": 0.061,
+  "plan_tipo": null,
+  "plan_resumen": null,
+  "plan": null
+}

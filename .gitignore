@@ -9,7 +9,7 @@ __pycache__/
 # Artefactos pesados o regenerables
 outputs/kg/modelo/
 outputs/entrega/*.zip
-outputs/informe/*.pdf
+# (el PDF del informe sí se versiona, para leerlo desde GitHub)
 *.bak*
 
 # Andamiaje temporal de project_planner

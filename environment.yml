@@ -1,0 +1,22 @@
+# Entorno del TP2 (Trabajo 2): conda env create -f environment.yml
+# torch se instala en su build de CPU (sin GPU), como pide la consigna.
+name: grafos-tp2
+channels:
+  - defaults
+dependencies:
+  - python=3.12.16
+  - pip
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cpu
+      - torch==2.15.0+cpu
+      - pykeen==1.11.1
+      - neo4j==6.4.1
+      - pandas==3.1.1
+      - numpy==2.5.5
+      - matplotlib==3.11.2
+      - ipykernel==7.4.0
+      - nbconvert==7.17.2
+      - nbformat==5.11.1
+      - python-dotenv==1.2.4
+      - tabulate==0.10.0
+      - pypdf==7.1.1

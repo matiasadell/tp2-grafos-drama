@@ -50,6 +50,27 @@ PDF_FINAL = SALIDA / "TP2_Trabajo2_informe.pdf"
 MARCADOR = re.compile(r"\{\{(tabla|valor|json|cociente|plan|captura|imagen):([^}]*)\}\}")
 
 
+# LaTeX básico: sin fuentes del sistema (sirve con pdflatex, xelatex y tectonic).
+# Solo se declaran los pocos símbolos Unicode que el texto usa y LaTeX no trae en modo texto.
+CABECERA = r"""
+\usepackage{iftex}
+\ifPDFTeX
+  \DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
+  \DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+  \DeclareUnicodeCharacter{2265}{\ensuremath{\geq}}
+\else
+  \usepackage{newunicodechar}
+  \newunicodechar{→}{\ensuremath{\rightarrow}}
+  \newunicodechar{≈}{\ensuremath{\approx}}
+  \newunicodechar{≥}{\ensuremath{\geq}}
+\fi
+"""
+
+
+CM_POR_PX = 0.011     # escala común de las capturas en el PDF
+ANCHO_MAX_CM = 17.5   # ancho útil de la página (A4/Letter con márgenes de 1,7 cm)
+
+
 class Faltante(Exception):
     pass
 
@@ -173,11 +194,22 @@ class Imagenes:
         self.uso: list[tuple[str, str]] = []
 
     def agregar(self, origen: Path, ancho: str, titulo: str, alto: str | None = None) -> str:
-        """alto: tope de altura (p. ej. '7cm'); LaTeX conserva la proporción (keepaspectratio)."""
+        """Solo se fija el ancho (nunca el alto), así LaTeX conserva la proporción y no estira la imagen.
+
+        Para las capturas (PNG) el ancho sale de sus píxeles con una escala común (CM_POR_PX), de modo que
+        la letra tenga el mismo tamaño en todas; se topa en ANCHO_MAX_CM. `ancho` y `alto` quedan como
+        parámetros por compatibilidad con los marcadores, pero no se usan para las capturas.
+        """
         self.n += 1
         nombre = f"img{self.n:02d}{origen.suffix.lower()}"
         shutil.copy(origen, self.destino / nombre)
-        tam = f"width={float(ancho) * 100:.0f}%" + (f" height={alto}" if alto else "")
+        try:
+            from PIL import Image
+            with Image.open(origen) as im:
+                cm = min(im.size[0] * CM_POR_PX, ANCHO_MAX_CM)
+            tam = f"width={cm:.1f}cm"
+        except Exception:
+            tam = f"width={float(ancho) * 100:.0f}%"
         return f"![{titulo}]({nombre}){{{tam}}}"
 
 
@@ -224,6 +256,8 @@ def contar_paginas(pdf: Path) -> int:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--max-paginas", type=int, default=8)
+    ap.add_argument("--motor", default="xelatex", help="motor LaTeX para pandoc (xelatex, tectonic...)")
+    ap.add_argument("--tex", action="store_true", help="además guarda outputs/informe/tex/informe.tex con sus imágenes")
     args = ap.parse_args(argv)
 
     SALIDA.mkdir(parents=True, exist_ok=True)
@@ -262,19 +296,27 @@ def main(argv: list[str] | None = None) -> int:
             print("Marcadores sin resolver:", *faltantes, sep="\n  ", file=sys.stderr)
             return 1
 
-        cmd = [
-            "pandoc", "informe.md", "-o", "informe.pdf",
-            "--pdf-engine=xelatex",
+        (build / "cabecera.tex").write_text(CABECERA, encoding="utf-8")
+        variables = [
+            "-H", "cabecera.tex",
             "-V", "geometry:margin=1.7cm",
             "-V", "fontsize=10pt",
             "-V", "lang=es",
-            # Cambria/Consolas: Latin Modern no trae ≈ ni ≥
-            "-V", "mainfont=Cambria",
-            "-V", "monofont=Consolas",
-            "-V", "monofontoptions=Scale=0.9",
             "-V", "colorlinks=true",
             "-V", "tables=true",
         ]
+        if args.tex:
+            destino_tex = SALIDA / "tex"
+            if destino_tex.exists():
+                shutil.rmtree(destino_tex)
+            destino_tex.mkdir(parents=True)
+            subprocess.run(["pandoc", "informe.md", "-s", "-o", "informe.tex", *variables],
+                           cwd=build, check=True, encoding="utf-8", errors="replace")
+            for f in build.glob("informe.tex"):
+                shutil.copy(f, destino_tex / f.name)
+            for f in build.glob("img*.png"):
+                shutil.copy(f, destino_tex / f.name)
+        cmd = ["pandoc", "informe.md", "-o", "informe.pdf", f"--pdf-engine={args.motor}", *variables]
         proc = subprocess.run(cmd, cwd=build, capture_output=True, text=True, encoding="utf-8", errors="replace")
         if proc.returncode != 0:
             print(proc.stderr, file=sys.stderr)

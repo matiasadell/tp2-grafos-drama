@@ -39,9 +39,7 @@ Es un filtrado colaborativo por co-ocurrencia: favorece los títulos muy popular
 
 **1.1 Proyección.** Se proyectó Usuario–Película desde `[:RATED]`, UNDIRECTED y con la propiedad `rating` como peso: **`califW` = {{valor:01_ejercicio1/1.1_proyeccion_califW;col=nodeCount}} nodos y {{valor:01_ejercicio1/1.1_proyeccion_califW;col=relationshipCount}} relaciones**. Son 671 usuarios y 9.125 películas. El conteo de relaciones duplica las 100.004 `[:RATED]` porque cada arista no dirigida se guarda en ambos sentidos.
 
-**1.2 Intermediación (betweenness).** Se usó muestreo (`samplingSize` 1000, `samplingSeed` 42, `concurrency` 1) y **sin peso**. GDS interpreta el peso como *costo* del camino, así que usar el rating haría que una calificación alta "alejara" a usuario y película, al revés de lo que significa. Top 10:
-
-{{tabla:01_ejercicio1/1.2_betweenness_top10;cols=tipo,nodo,betweenness;titulos=Tipo,Nodo,Betweenness;dec=0}}
+**1.2 Intermediación (betweenness).** Se usó muestreo (`samplingSize` 1000, `samplingSeed` 42, `concurrency` 1) y **sin peso**. GDS interpreta el peso como *costo* del camino, así que usar el rating haría que una calificación alta "alejara" a usuario y película, al revés de lo que significa. El top 10 se ve en la Figura 1 (punto 1.5, modo stream), que usa esta misma consulta.
 
 Los diez son usuarios, y coinciden con los más activos: *Darlene Garcia* tiene 2.391 calificaciones y *Robert Brooks*, 1.868. En un grafo bipartito, los caminos entre películas pasan por usuarios; los que calificaron mucho, incluidos títulos poco vistos, son los puentes obligados. Con muestreo los valores son una aproximación. Con varios hilos, la selección de nodos fuente variaba entre corridas a pesar de la semilla (hasta un 2 %); con `concurrency` 1 el resultado es idéntico en cada corrida.
 

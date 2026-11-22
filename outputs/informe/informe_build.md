@@ -66,20 +66,7 @@ Es un filtrado colaborativo por co-ocurrencia: favorece los títulos muy popular
 
 **1.1 Proyección.** Se proyectó Usuario–Película desde `[:RATED]`, UNDIRECTED y con la propiedad `rating` como peso: **`califW` = 9.796 nodos y 200.008 relaciones**. Son 671 usuarios y 9.125 películas. El conteo de relaciones duplica las 100.004 `[:RATED]` porque cada arista no dirigida se guarda en ambos sentidos.
 
-**1.2 Intermediación (betweenness).** Se usó muestreo (`samplingSize` 1000, `samplingSeed` 42, `concurrency` 1) y **sin peso**. GDS interpreta el peso como *costo* del camino, así que usar el rating haría que una calificación alta "alejara" a usuario y película, al revés de lo que significa. Top 10:
-
-| Tipo | Nodo | Betweenness |
-|---|---|---|
-| User | Robert Brooks | 905.487 |
-| User | Darlene Garcia | 603.275 |
-| User | Karen Avila | 316.053 |
-| User | Angela Robertson | 269.168 |
-| User | Angela Garcia | 264.897 |
-| User | Larry Boyd | 241.802 |
-| User | Marissa Choi | 195.752 |
-| User | Rita Owens | 192.878 |
-| User | Aaron Castro | 154.595 |
-| User | Crystal Spencer | 153.986 |
+**1.2 Intermediación (betweenness).** Se usó muestreo (`samplingSize` 1000, `samplingSeed` 42, `concurrency` 1) y **sin peso**. GDS interpreta el peso como *costo* del camino, así que usar el rating haría que una calificación alta "alejara" a usuario y película, al revés de lo que significa. El top 10 se ve en la Figura 1 (punto 1.5, modo stream), que usa esta misma consulta.
 
 Los diez son usuarios, y coinciden con los más activos: *Darlene Garcia* tiene 2.391 calificaciones y *Robert Brooks*, 1.868. En un grafo bipartito, los caminos entre películas pasan por usuarios; los que calificaron mucho, incluidos títulos poco vistos, son los puentes obligados. Con muestreo los valores son una aproximación. Con varios hilos, la selección de nodos fuente variaba entre corridas a pesar de la semilla (hasta un 2 %); con `concurrency` 1 el resultado es idéntico en cada corrida.
 
@@ -114,27 +101,11 @@ Las similitudes son muy altas (cerca de 0,997). FastRP promedia vecindarios y, e
 
 **1.5 Betweenness en los modos stream, stats y write.** Se usaron los mismos parámetros que en el 1.2. El modo **write persiste la propiedad de nodo `betweenness`** en 9.796 nodos. La verificación en la base coincide con el top del modo stream.
 
-*1.5 — modo stream (tabla de respaldo; falta la captura de Query):*
+![1.5 — modo stream](img01.png){width=7.1cm}
 
-| Tipo | Nodo | Betweenness (stream) |
-|---|---|---|
-| User | Robert Brooks | 905.487 |
-| User | Darlene Garcia | 603.275 |
-| User | Karen Avila | 316.053 |
-| User | Angela Robertson | 269.168 |
-| User | Angela Garcia | 264.897 |
+![1.5 — modo stats](img02.png){width=10.2cm}
 
-*1.5 — modo stats (tabla de respaldo; falta la captura de Query):*
-
-| Distribución (stats) | computeMillis |
-|---|---|
-| min: 0,0; mean: 1.085,4; p50: 12,0; p99: 14.579,7; max: 905.488,0 | 4.122 |
-
-*1.5 — modo write (tabla de respaldo; falta la captura de Query):*
-
-| Propiedad escrita | nodePropertiesWritten | computeMillis | writeMillis |
-|---|---|---|---|
-| betweenness | 9.796 | 4.093 | 72 |
+![1.5 — modo write](img03.png){width=8.7cm}
 
 ## Ejercicio 2 — Índices, planes y escritura por lotes
 
@@ -142,11 +113,11 @@ La consulta es `MATCH (m:Movie) WHERE m.year >= 1990 AND m.year <= 1999 RETURN c
 
 **2.1 Sin índice.** El operador inicial es **NodeByLabelScan** (recorre las 9.125 `:Movie`), seguido de `Filter`: **18.222 db hits**, 9,0 ms de punta a punta y 6,89 ms de operadores.
 
-![2.1 — PROFILE sin índice (render de respaldo generado con el driver)](img01.png){width=95%}
+![2.1 — PROFILE sin índice](img04.png){width=13.6cm}
 
 **2.2 Con índice de rango `movie_year_range`.** El plan pasa a **NodeIndexSeekByRange**, que lee solo las entradas del rango: **2.203 db hits**, 2,0 ms de punta a punta y 0,73 ms de operadores.
 
-![2.2 — PROFILE con índice de rango (render de respaldo generado con el driver)](img02.png){width=95%}
+![2.2 — PROFILE con índice de rango](img05.png){width=16.2cm}
 
 | Factor de mejora (sin índice / con índice) | Valor |
 |---|---|
@@ -158,11 +129,11 @@ La mejora en el motor (db hits y tiempo de operadores) es de casi un orden de ma
 
 **2.3 EXPLAIN, runtime y Eager.** `EXPLAIN` muestra el plan estimado sin ejecutar (sin filas ni db hits reales). `PROFILE` confirma el **runtime PIPELINED** (planner COST, Cypher 25). En la consulta de rango **no aparece Eager**, como se esperaba en una lectura pura. Se analizó también la sentencia de escritura del 2.4: su plan (`TransactionForeach` → `Expand` → `EagerAggregation` → `Unwind` → `SetProperty`) **tampoco tiene un operador Eager**, porque lee `rating` y escribe otra propiedad, `ratingNorm`, así que no hay conflicto de lectura y escritura. `EagerAggregation` es la agregación que calcula el promedio, no la barrera Eager.
 
-![2.3 — EXPLAIN de la consulta de rango (render de respaldo generado con el driver)](img03.png){width=85%}
+![2.3 — EXPLAIN de la consulta de rango](img06.png){width=10.1cm}
 
-![2.3 — PROFILE de la consulta de rango (runtime) (render de respaldo generado con el driver)](img04.png){width=85%}
+![2.3 — PROFILE de la consulta de rango (runtime)](img07.png){width=16.2cm}
 
-![2.3 — EXPLAIN de la escritura del 2.4 (render de respaldo generado con el driver)](img05.png){width=95%}
+![2.3 — EXPLAIN de la escritura del 2.4](img08.png){width=8.8cm}
 
 **2.4 Escritura por lotes: `ratingNorm`.** Cada lote procesa 50 usuarios con todas sus calificaciones. El promedio del usuario se calcula dentro de la transacción del lote:
 

@@ -66,7 +66,20 @@ Es un filtrado colaborativo por co-ocurrencia: favorece los títulos muy popular
 
 **1.1 Proyección.** Se proyectó Usuario–Película desde `[:RATED]`, UNDIRECTED y con la propiedad `rating` como peso: **`califW` = 9.796 nodos y 200.008 relaciones**. Son 671 usuarios y 9.125 películas. El conteo de relaciones duplica las 100.004 `[:RATED]` porque cada arista no dirigida se guarda en ambos sentidos.
 
-**1.2 Intermediación (betweenness).** Se usó muestreo (`samplingSize` 1000, `samplingSeed` 42, `concurrency` 1) y **sin peso**. GDS interpreta el peso como *costo* del camino, así que usar el rating haría que una calificación alta "alejara" a usuario y película, al revés de lo que significa. El top 10 se ve en la Figura 1 (punto 1.5, modo stream), que usa esta misma consulta.
+**1.2 Intermediación (betweenness).** Se usó muestreo (`samplingSize` 1000, `samplingSeed` 42, `concurrency` 1) y **sin peso**. GDS interpreta el peso como *costo* del camino, así que usar el rating haría que una calificación alta "alejara" a usuario y película, al revés de lo que significa. Top 10 (la Figura 1, en el 1.5, muestra la misma consulta en Query):
+
+| Tipo | Nodo | Betweenness |
+|---|---|---|
+| User | Robert Brooks | 905.487 |
+| User | Darlene Garcia | 603.275 |
+| User | Karen Avila | 316.053 |
+| User | Angela Robertson | 269.168 |
+| User | Angela Garcia | 264.897 |
+| User | Larry Boyd | 241.802 |
+| User | Marissa Choi | 195.752 |
+| User | Rita Owens | 192.878 |
+| User | Aaron Castro | 154.595 |
+| User | Crystal Spencer | 153.986 |
 
 Los diez son usuarios, y coinciden con los más activos: *Darlene Garcia* tiene 2.391 calificaciones y *Robert Brooks*, 1.868. En un grafo bipartito, los caminos entre películas pasan por usuarios; los que calificaron mucho, incluidos títulos poco vistos, son los puentes obligados. Con muestreo los valores son una aproximación. Con varios hilos, la selección de nodos fuente variaba entre corridas a pesar de la semilla (hasta un 2 %); con `concurrency` 1 el resultado es idéntico en cada corrida.
 
@@ -109,7 +122,7 @@ Las similitudes son muy altas (cerca de 0,997). FastRP promedia vecindarios y, e
 
 ## Ejercicio 2 — Índices, planes y escritura por lotes
 
-La consulta es `MATCH (m:Movie) WHERE m.year >= 1990 AND m.year <= 1999 RETURN count(m)`, que devuelve 2.202 películas. **El dump ya trae un índice RANGE sobre `Movie(year)`** (`index_fc5f831e`). Para medir "sin el índice específico", el script primero lo borra y controla que no quede ninguno sobre `year`. Los tiempos son la mediana de 20 corridas después de un calentamiento.
+La consulta es `MATCH (m:Movie) WHERE m.year >= 1990 AND m.year <= 1999 RETURN count(m)`, que devuelve 2.202 películas. **El dump ya trae un índice RANGE sobre `Movie(year)`** (`index_fc5f831e`). Para medir "sin el índice específico", el script primero lo borra y controla que no quede ninguno sobre `year`. Los tiempos del texto son la mediana de 20 corridas después de un calentamiento. Cada captura muestra una corrida suelta en Query, así que sus tiempos pueden diferir un poco; los db hits y los operadores son los mismos.
 
 **2.1 Sin índice.** El operador inicial es **NodeByLabelScan** (recorre las 9.125 `:Movie`), seguido de `Filter`: **18.222 db hits**, 9,0 ms de punta a punta y 6,89 ms de operadores.
 
@@ -163,7 +176,7 @@ Verificación: todas las `[:RATED]` quedaron normalizadas y el promedio de `rati
 
 ## Ejercicio 3 — Embeddings, predicción de enlaces y PairRE
 
-**3.1 node2vec sobre `califW`.** Configuración: dimensión 128, `walkLength` 40, `walksPerNode` 10, una iteración, caminatas sesgadas por el peso `rating`, semilla 42 y `concurrency` 1. Se muestran 5 nodos (la ancla, la película más calificada que no es la ancla y los 3 usuarios más activos), con las primeras 6 de sus **128 componentes**:
+**3.1 node2vec sobre `califW`.** Configuración: dimensión 128, `walkLength` 40, `walksPerNode` 10, una iteración, caminatas sesgadas por el peso `rating`, semilla 42 y `concurrency` 1. Se muestran 5 nodos (la ancla, la película más calificada que no es la ancla y los 3 usuarios más activos), con las primeras 6 de sus **128 componentes**. Los vectores completos están en el Anexo:
 
 | Tipo | Nodo | Dim. | Embedding (primeras 6 componentes) |
 |---|---|---|---|
@@ -173,7 +186,7 @@ Verificación: todas las `[:RATED]` quedaron normalizadas y el promedio de `rati
 | User | Karen Avila | 128 | [-0,610, -0,194, 0,113, 0,071, -0,130, 0,112, …] (dim 128) |
 | User | Robert Brooks | 128 | [0,109, -0,104, 0,078, 0,055, -0,048, 0,368, …] (dim 128) |
 
-**3.2 Objetivo y subgrafo de entrenamiento.** Se predicen nuevas `[:RATED]` usuario→película. El subgrafo se acotó, según las NOTAS, a las películas con al menos 20 calificaciones (proyección Cypher `califLP`): **1.974 nodos** (671 usuarios y 1.303 películas) y **69.104 relaciones `[:RATED]`**. GDS informa 138.208, porque cada arista no dirigida cuenta dos veces.
+**3.2 Objetivo y subgrafo de entrenamiento.** Se predicen nuevas `[:RATED]` usuario→película. El subgrafo se acotó, según las NOTAS, a las películas con al menos 20 calificaciones (proyección Cypher `califLP`): **1.974 nodos** (671 usuarios y 1.303 películas) y **69.104 relaciones `[:RATED]`**. GDS informa 138.208, porque cada arista no dirigida cuenta dos veces. Dentro del pipeline, el split del 3.3 reparte esas relaciones así: ≈10 % para test (≈6.910), ≈10 % del resto como ejemplos positivos de entrenamiento del clasificador (≈6.220) y el resto (≈55.970) como grafo de features, sobre el que se calcula node2vec.
 
 **3.3 Pipeline de link prediction.** node2vec es un **paso del pipeline** (`addNodeProperty`): GDS lo recalcula sobre el grafo de entrenamiento, así que las aristas de test no se filtran al embedding. La feature es el producto de Hadamard de los embeddings. Split: 10 % test, 10 % train del resto y 3 folds de validación, con muestreo negativo 1:1. Candidatos: regresión logística (`penalty` 0, 0,01 y 0,1) y Random Forest (10 árboles con profundidad 10, y 25 con profundidad 15). Métrica: AUCPR.
 
@@ -202,3 +215,15 @@ Verificación: todas las `[:RATED]` quedaron normalizadas y el promedio de `rati
 | Devil in a Blue Dress (1995) | Drama | -2,609 | Crime, Film-Noir, Mystery, Thriller |
 
 Un ranking al azar daría Hits@10 ≈ 10/4.052 ≈ 0,0025, así que el modelo es unas 75 veces mejor. Igual, el valor queda lejos del dataset *Nations* de la práctica (MRR ≈ 0,73) porque este KG es **ralo**: unas 2,2 tripletas por entidad, y la mayoría de los actores aparece una o dos veces. La pérdida converge hacia la época 20. Los tres hechos propuestos son plausibles: *Vanilla Sky* suele describirse como drama psicológico, *The African Queen* como aventura romántica con mucho de drama, y *Devil in a Blue Dress* como drama criminal neo-noir. Se verificó contra Neo4j que hoy ninguna de las tres tiene el género Drama. El score de PairRE es una distancia con signo negativo: más alto es más plausible.
+
+## Anexo — Vectores node2vec completos (punto 3.1)
+
+Los 5 vectores de dimensión 128 del punto 3.1, con 2 decimales. Salen del paso `3.1_node2vec_5_nodos` de `03_ejercicio3.cypher` (semilla 42, `concurrency` 1, reproducibles).
+
+\begin{footnotesize}\sloppy
+\noindent\textbf{Forrest Gump (Movie)}, dim 128: 0,15 -0,13 0,24 0,06 -0,28 0,05 0,00 0,57 -0,20 0,26 -0,23 -0,43 0,55 -0,28 0,04 -0,12 -0,10 0,37 -0,15 -0,06 0,25 0,09 0,02 0,19 -0,30 -0,04 -0,11 -0,23 -0,15 -0,09 -0,13 -0,11 0,31 -0,18 -0,26 -0,00 0,03 -0,16 0,22 -0,02 0,44 -0,45 0,09 -0,22 0,12 -0,22 -0,25 0,10 0,49 0,30 0,32 -0,29 0,29 0,48 0,14 -0,07 -0,04 0,13 0,09 -0,02 -0,36 0,24 0,23 -0,26 -0,22 -0,29 0,38 0,27 -0,30 0,23 -0,12 -0,10 -0,01 0,03 -0,46 0,04 0,20 -0,02 -0,06 0,02 0,05 0,01 -0,14 -0,20 -0,00 0,12 -0,09 0,44 0,41 -0,18 -0,21 -0,22 0,11 0,49 -0,18 0,03 -0,25 -0,12 0,21 -0,25 0,17 0,19 0,21 0,29 0,23 -0,15 -0,12 -0,16 -0,22 0,07 0,53 -0,12 0,10 -0,32 -0,20 -0,01 -0,06 -0,00 -0,34 0,12 -0,29 0,39 -0,58 -0,05 -0,04 0,09 0,23 -0,35\par\smallskip
+\noindent\textbf{Pulp Fiction (Movie)}, dim 128: 0,27 -0,09 0,20 0,05 -0,10 -0,02 -0,09 0,27 -0,13 0,01 -0,17 -0,01 0,35 -0,02 -0,23 -0,14 0,18 0,19 -0,27 -0,15 -0,03 -0,25 0,15 0,16 -0,24 -0,05 -0,23 0,07 -0,35 -0,41 -0,27 -0,56 0,17 -0,00 -0,25 0,26 -0,05 0,13 -0,18 -0,15 0,02 -0,29 -0,06 -0,17 0,36 -0,18 -0,22 -0,07 0,43 0,23 0,28 -0,23 0,36 0,28 -0,02 -0,08 0,19 0,51 0,10 -0,00 -0,13 0,13 -0,04 -0,23 -0,14 -0,31 0,03 0,13 -0,52 -0,04 0,07 -0,19 -0,01 -0,10 -0,15 -0,13 0,25 0,15 -0,15 0,07 -0,20 -0,48 0,03 0,12 0,01 0,15 0,09 0,46 -0,08 -0,04 -0,05 0,15 -0,16 0,55 0,12 -0,29 -0,34 0,12 0,21 -0,33 -0,09 -0,02 0,39 0,41 0,27 -0,21 -0,05 -0,24 -0,24 -0,13 0,33 -0,05 0,44 0,19 -0,59 0,23 -0,15 -0,00 -0,21 -0,23 -0,27 0,12 -0,22 -0,07 -0,05 -0,04 0,39 0,05\par\smallskip
+\noindent\textbf{Darlene Garcia (User)}, dim 128: -0,80 -0,09 0,12 -0,28 0,28 0,09 -0,50 -0,07 0,09 0,52 0,00 0,61 0,32 0,27 0,12 -0,17 0,04 0,12 -0,29 -0,13 0,34 0,14 0,29 0,26 -0,24 0,33 -0,10 0,38 -0,67 -0,33 -0,21 0,32 0,19 0,21 0,30 -0,16 0,14 0,59 0,36 0,40 -0,07 -0,22 -0,29 -0,07 -0,12 -0,08 -0,24 -0,17 0,79 -0,07 0,21 0,12 0,19 0,05 -0,14 0,05 -0,30 0,23 -0,12 -0,33 -0,06 0,10 -0,21 -0,19 0,02 -0,28 -0,24 -0,07 0,26 -0,24 0,06 0,08 -0,10 0,19 -0,18 0,28 0,22 0,05 0,22 0,45 0,04 -0,04 0,10 -0,10 0,34 0,33 -0,15 0,30 -0,45 -0,24 -0,16 -0,25 -0,57 0,26 0,04 0,11 -0,06 -0,11 0,20 -0,39 0,10 0,48 -0,15 0,14 -0,11 0,02 -0,13 -0,55 0,18 -0,15 0,36 0,52 0,10 0,06 0,21 0,29 -0,27 0,00 0,44 0,42 -0,24 0,08 -0,05 0,40 0,39 0,08 -0,37 -0,41\par\smallskip
+\noindent\textbf{Karen Avila (User)}, dim 128: -0,61 -0,19 0,11 0,07 -0,13 0,11 0,14 0,19 0,17 -0,13 -0,26 0,15 0,41 -0,25 -0,12 0,02 0,34 -0,26 0,17 -0,18 -0,23 -0,05 -0,14 -0,31 -0,42 0,10 0,44 -0,09 -0,12 0,14 0,30 0,05 -0,02 -0,15 0,01 -0,12 0,35 0,16 0,14 -0,35 0,13 0,11 -0,16 0,33 0,04 0,13 0,05 0,36 1,00 0,60 0,12 -0,43 0,10 -0,18 0,54 0,52 0,12 -0,19 -0,10 -0,71 0,04 0,34 0,21 -0,13 0,44 -0,45 -0,09 -0,05 -0,89 -0,47 -0,16 -0,40 0,28 0,29 -0,04 0,31 0,36 -0,14 -0,12 0,14 -0,22 0,21 0,32 -0,12 0,24 0,34 -0,24 0,37 0,32 -0,17 -0,14 -0,23 -0,09 0,23 0,02 -0,43 -0,34 -0,06 -0,06 -0,69 -0,26 -0,22 0,47 0,17 0,20 0,30 0,10 0,01 -0,12 0,50 -0,37 0,19 -0,42 -0,42 -0,23 -0,30 -0,23 -0,16 -0,09 -0,38 -0,19 0,10 -0,25 0,04 -0,29 0,15 0,12 -0,15\par\smallskip
+\noindent\textbf{Robert Brooks (User)}, dim 128: 0,11 -0,10 0,08 0,06 -0,05 0,37 0,08 0,11 0,26 0,41 0,02 -0,11 0,45 -0,30 -0,22 0,29 0,19 0,11 -0,01 -0,00 0,32 0,02 0,05 -0,04 0,11 0,20 -0,09 -0,17 -0,17 0,13 -0,03 0,02 -0,18 -0,22 -0,13 0,46 0,10 0,28 0,45 -0,17 0,45 -0,25 0,07 -0,06 -0,04 0,26 0,10 -0,16 0,76 0,04 0,08 -0,13 0,28 -0,25 -0,29 -0,15 0,09 -0,10 0,38 -0,07 0,01 0,14 0,42 -0,18 -0,20 -0,14 -0,10 0,21 -0,52 -0,12 -0,13 0,05 -0,16 0,64 0,05 -0,04 0,26 -0,17 -0,09 -0,22 -0,06 0,06 -0,32 0,16 0,07 0,26 -0,17 0,06 -0,29 -0,16 0,24 -0,35 0,22 0,40 0,11 -0,03 -0,51 0,05 0,24 -0,57 -0,08 -0,24 -0,09 -0,24 0,12 0,07 -0,04 0,14 -0,49 0,04 -0,03 0,33 0,27 0,13 -0,17 0,06 -0,17 0,18 -0,08 -0,29 0,62 -0,01 -0,18 -0,06 0,36 -0,14 0,08 -0,26\par\smallskip
+\end{footnotesize}

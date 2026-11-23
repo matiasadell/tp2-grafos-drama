@@ -47,16 +47,12 @@ CAPTURAS = RAIZ / "outputs" / "capturas"
 PLANES = RAIZ / "outputs" / "planes"
 PDF_FINAL = SALIDA / "TP2_Trabajo2_informe.pdf"
 
-MARCADOR = re.compile(r"\{\{(tabla|valor|json|cociente|plan|captura|imagen|vectores):([^}]*)\}\}")
+MARCADOR = re.compile(r"\{\{(tabla|valor|json|cociente|plan|captura|imagen):([^}]*)\}\}")
 
 
 # LaTeX básico: sin fuentes del sistema (sirve con pdflatex, xelatex y tectonic).
 # Solo se declaran los pocos símbolos Unicode que el texto usa y LaTeX no trae en modo texto.
-# OJO: pasar -H hace que pandoc ignore el header-includes del YAML del informe, así que todo lo
-# que haga falta en el preámbulo va acá (p. ej. float/[H] para que las figuras queden en su lugar).
 CABECERA = r"""
-\usepackage{float}
-\floatplacement{figure}{H}
 \usepackage{iftex}
 \ifPDFTeX
   \DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
@@ -174,28 +170,6 @@ def valor_json(spec: str) -> str:
     return formatear(json.dumps(dato_json(objetivo, ops["ruta"])), ops)
 
 
-def _latex(texto: str) -> str:
-    for a, b in (("\\", r"\textbackslash{}"), ("&", r"\&"), ("%", r"\%"), ("$", r"\$"), ("#", r"\#"),
-                 ("_", r"\_"), ("{", r"\{"), ("}", r"\}"), ("~", r"\textasciitilde{}"), ("^", r"\^{}")):
-        texto = texto.replace(a, b)
-    return texto
-
-
-def vectores(spec: str) -> str:
-    """{{vectores:<script>/<id>;col=embedding;etiqueta=nodo;tipo=tipo;dec=2}}: vectores completos en letra chica."""
-    objetivo, ops = opciones(spec)
-    filas = leer_csv(objetivo)
-    dec, col, et, tipo = int(ops.get("dec", 2)), ops.get("col", "embedding"), ops.get("etiqueta", "nodo"), ops.get("tipo")
-    lineas = [r"\begin{footnotesize}\sloppy"]
-    for f in filas:
-        v = json.loads(f[col])
-        nombre = _latex(f[et]) + (f" ({_latex(f[tipo])})" if tipo else "")
-        nums = " ".join(num_es(float(x), dec) for x in v)
-        lineas.append(rf"\noindent\textbf{{{nombre}}}, dim {len(v)}: {nums}\par\smallskip")
-    lineas.append(r"\end{footnotesize}")
-    return "\n".join(lineas)
-
-
 def cociente(spec: str) -> str:
     partes = [p.strip() for p in spec.split(";")]
     a, b = partes[0], partes[1]
@@ -305,8 +279,6 @@ def main(argv: list[str] | None = None) -> int:
                     return valor_json(spec)
                 if tipo == "cociente":
                     return cociente(spec)
-                if tipo == "vectores":
-                    return vectores(spec)
                 if tipo == "plan":
                     return plan(spec, imgs)
                 if tipo == "captura":

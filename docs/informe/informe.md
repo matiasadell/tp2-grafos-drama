@@ -39,9 +39,7 @@ Es un filtrado colaborativo por co-ocurrencia: favorece los títulos muy popular
 
 **1.1 Proyección.** Se proyectó Usuario–Película desde `[:RATED]`, UNDIRECTED y con la propiedad `rating` como peso: **`califW` = {{valor:01_ejercicio1/1.1_proyeccion_califW;col=nodeCount}} nodos y {{valor:01_ejercicio1/1.1_proyeccion_califW;col=relationshipCount}} relaciones**. Son 671 usuarios y 9.125 películas. El conteo de relaciones duplica las 100.004 `[:RATED]` porque cada arista no dirigida se guarda en ambos sentidos.
 
-**1.2 Intermediación (betweenness).** Se usó muestreo (`samplingSize` 1000, `samplingSeed` 42, `concurrency` 1) y **sin peso**. GDS interpreta el peso como *costo* del camino, así que usar el rating haría que una calificación alta "alejara" a usuario y película, al revés de lo que significa. Top 10 (la Figura 1, en el 1.5, muestra la misma consulta en Query):
-
-{{tabla:01_ejercicio1/1.2_betweenness_top10;cols=tipo,nodo,betweenness;titulos=Tipo,Nodo,Betweenness;dec=0}}
+**1.2 Intermediación (betweenness).** Se usó muestreo (`samplingSize` 1000, `samplingSeed` 42, `concurrency` 1) y **sin peso**. GDS interpreta el peso como *costo* del camino, así que usar el rating haría que una calificación alta "alejara" a usuario y película, al revés de lo que significa. El top 10 se ve en la Figura 1 (punto 1.5, modo stream), que usa esta misma consulta.
 
 Los diez son usuarios, y coinciden con los más activos: *Darlene Garcia* tiene 2.391 calificaciones y *Robert Brooks*, 1.868. En un grafo bipartito, los caminos entre películas pasan por usuarios; los que calificaron mucho, incluidos títulos poco vistos, son los puentes obligados. Con muestreo los valores son una aproximación. Con varios hilos, la selección de nodos fuente variaba entre corridas a pesar de la semilla (hasta un 2 %); con `concurrency` 1 el resultado es idéntico en cada corrida.
 
@@ -67,7 +65,7 @@ Las similitudes son muy altas (cerca de 0,997). FastRP promedia vecindarios y, e
 
 ## Ejercicio 2 — Índices, planes y escritura por lotes
 
-La consulta es `MATCH (m:Movie) WHERE m.year >= 1990 AND m.year <= 1999 RETURN count(m)`, que devuelve {{valor:02_ejercicio2/2.1_profile_sin_indice;col=peliculas}} películas. **El dump ya trae un índice RANGE sobre `Movie(year)`** (`index_fc5f831e`). Para medir "sin el índice específico", el script primero lo borra y controla que no quede ninguno sobre `year`. Los tiempos del texto son la mediana de 20 corridas después de un calentamiento. Cada captura muestra una corrida suelta en Query, así que sus tiempos pueden diferir un poco; los db hits y los operadores son los mismos.
+La consulta es `MATCH (m:Movie) WHERE m.year >= 1990 AND m.year <= 1999 RETURN count(m)`, que devuelve {{valor:02_ejercicio2/2.1_profile_sin_indice;col=peliculas}} películas. **El dump ya trae un índice RANGE sobre `Movie(year)`** (`index_fc5f831e`). Para medir "sin el índice específico", el script primero lo borra y controla que no quede ninguno sobre `year`. Los tiempos son la mediana de 20 corridas después de un calentamiento.
 
 **2.1 Sin índice.** El operador inicial es **{{json:02_ejercicio2/2.1_profile_sin_indice;ruta=plan_resumen.operador_inicial}}** (recorre las 9.125 `:Movie`), seguido de `Filter`: **{{json:02_ejercicio2/2.1_profile_sin_indice;ruta=plan_resumen.db_hits_total}} db hits**, {{json:02_ejercicio2/2.1_profile_sin_indice;ruta=medicion.mediana_ms;dec=1}} ms de punta a punta y {{json:02_ejercicio2/2.1_profile_sin_indice;ruta=medicion.mediana_operadores_ms;dec=2}} ms de operadores.
 
@@ -113,11 +111,11 @@ Verificación: todas las `[:RATED]` quedaron normalizadas y el promedio de `rati
 
 ## Ejercicio 3 — Embeddings, predicción de enlaces y PairRE
 
-**3.1 node2vec sobre `califW`.** Configuración: dimensión 128, `walkLength` 40, `walksPerNode` 10, una iteración, caminatas sesgadas por el peso `rating`, semilla 42 y `concurrency` 1. Se muestran 5 nodos (la ancla, la película más calificada que no es la ancla y los 3 usuarios más activos), con las primeras 6 de sus **{{valor:03_ejercicio3/3.1_node2vec_5_nodos;col=dimension}} componentes**. Los vectores completos están en el Anexo:
+**3.1 node2vec sobre `califW`.** Configuración: dimensión 128, `walkLength` 40, `walksPerNode` 10, una iteración, caminatas sesgadas por el peso `rating`, semilla 42 y `concurrency` 1. Se muestran 5 nodos (la ancla, la película más calificada que no es la ancla y los 3 usuarios más activos), con las primeras 6 de sus **{{valor:03_ejercicio3/3.1_node2vec_5_nodos;col=dimension}} componentes**:
 
 {{tabla:03_ejercicio3/3.1_node2vec_5_nodos;cols=tipo,nodo,dimension,embedding;titulos=Tipo,Nodo,Dim.,Embedding (primeras 6 componentes);dec=3;vec=6}}
 
-**3.2 Objetivo y subgrafo de entrenamiento.** Se predicen nuevas `[:RATED]` usuario→película. El subgrafo se acotó, según las NOTAS, a las películas con al menos 20 calificaciones (proyección Cypher `califLP`): **{{valor:03_ejercicio3/3.2a_subgrafo_entrenamiento;col=nodeCount}} nodos** ({{valor:03_ejercicio3/3.2b_subgrafo_conteo_en_la_base;col=usuarios}} usuarios y {{valor:03_ejercicio3/3.2b_subgrafo_conteo_en_la_base;col=peliculas}} películas) y **{{valor:03_ejercicio3/3.2b_subgrafo_conteo_en_la_base;col=relacionesRated}} relaciones `[:RATED]`**. GDS informa {{valor:03_ejercicio3/3.2a_subgrafo_entrenamiento;col=relationshipCount}}, porque cada arista no dirigida cuenta dos veces. Dentro del pipeline, el split del 3.3 reparte esas relaciones así: ≈10 % para test (≈6.910), ≈10 % del resto como ejemplos positivos de entrenamiento del clasificador (≈6.220) y el resto (≈55.970) como grafo de features, sobre el que se calcula node2vec.
+**3.2 Objetivo y subgrafo de entrenamiento.** Se predicen nuevas `[:RATED]` usuario→película. El subgrafo se acotó, según las NOTAS, a las películas con al menos 20 calificaciones (proyección Cypher `califLP`): **{{valor:03_ejercicio3/3.2a_subgrafo_entrenamiento;col=nodeCount}} nodos** ({{valor:03_ejercicio3/3.2b_subgrafo_conteo_en_la_base;col=usuarios}} usuarios y {{valor:03_ejercicio3/3.2b_subgrafo_conteo_en_la_base;col=peliculas}} películas) y **{{valor:03_ejercicio3/3.2b_subgrafo_conteo_en_la_base;col=relacionesRated}} relaciones `[:RATED]`**. GDS informa {{valor:03_ejercicio3/3.2a_subgrafo_entrenamiento;col=relationshipCount}}, porque cada arista no dirigida cuenta dos veces.
 
 **3.3 Pipeline de link prediction.** node2vec es un **paso del pipeline** (`addNodeProperty`): GDS lo recalcula sobre el grafo de entrenamiento, así que las aristas de test no se filtran al embedding. La feature es el producto de Hadamard de los embeddings. Split: 10 % test, 10 % train del resto y 3 folds de validación, con muestreo negativo 1:1. Candidatos: regresión logística (`penalty` 0, 0,01 y 0,1) y Random Forest (10 árboles con profundidad 10, y 25 con profundidad 15). Métrica: AUCPR.
 
@@ -136,9 +134,3 @@ Verificación: todas las `[:RATED]` quedaron normalizadas y el promedio de `rati
 {{tabla:../kg/hechos_propuestos;cols=pelicula,genero,score,generos_actuales;titulos=Película,Género propuesto,Score,Géneros actuales;dec=3}}
 
 Un ranking al azar daría Hits@10 ≈ 10/4.052 ≈ 0,0025, así que el modelo es unas 75 veces mejor. Igual, el valor queda lejos del dataset *Nations* de la práctica (MRR ≈ 0,73) porque este KG es **ralo**: unas 2,2 tripletas por entidad, y la mayoría de los actores aparece una o dos veces. La pérdida converge hacia la época 20. Los tres hechos propuestos son plausibles: *Vanilla Sky* suele describirse como drama psicológico, *The African Queen* como aventura romántica con mucho de drama, y *Devil in a Blue Dress* como drama criminal neo-noir. Se verificó contra Neo4j que hoy ninguna de las tres tiene el género Drama. El score de PairRE es una distancia con signo negativo: más alto es más plausible.
-
-## Anexo — Vectores node2vec completos (punto 3.1)
-
-Los 5 vectores de dimensión 128 del punto 3.1, con 2 decimales. Salen del paso `3.1_node2vec_5_nodos` de `03_ejercicio3.cypher` (semilla 42, `concurrency` 1, reproducibles).
-
-{{vectores:03_ejercicio3/3.1_node2vec_5_nodos;col=embedding;etiqueta=nodo;tipo=tipo;dec=2}}

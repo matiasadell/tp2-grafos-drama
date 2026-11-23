@@ -1,20 +1,3 @@
-// =====================================================================
-// TP2 — Bases de Datos Orientadas a Grafos (UCA, 2.º cuatrimestre 2026)
-// Trabajo 2 — Eje Drama — Adell, Giannice, Mazzola
-// EJERCICIO 1 — Graph Data Science sobre la proyección califW
-//
-// Se ejecuta en la app Query (pegar el archivo completo) o con el runner:
-//   python -m src.tp2.run_cypher src/cypher/01_ejercicio1.cypher
-// Reejecutable: arranca liberando la proyección y la propiedad que escribe.
-// Semilla 42 en todo lo que la acepta (samplingSeed / randomSeed). Betweenness, LPA y KNN
-// corren con concurrency 1: con varios hilos el muestreo/orden no es reproducible.
-// Decisiones (ver informe):
-//   - betweenness SIN peso: GDS interpreta el peso como costo/distancia,
-//     así que un rating alto "alejaría" a los nodos (semántica inversa);
-//   - Label Propagation CON peso (rating = afinidad);
-//   - KNN sobre un embedding FastRP (dim 128, ponderado) de los usuarios.
-// =====================================================================
-
 // @paso 1.0a_limpiar_proyeccion
 CALL gds.graph.drop('califW', false) YIELD graphName
 RETURN graphName AS proyeccionLiberada;
@@ -26,7 +9,7 @@ REMOVE n.betweenness
 RETURN count(n) AS propiedadesBorradas;
 
 // ---------------------------------------------------------------------
-// 1.1 Proyección Usuario–Película a partir de [:RATED], ponderada por rating
+// Ejercicio 1.1 — Proyección a memoria
 // ---------------------------------------------------------------------
 // @paso 1.1_proyeccion_califW
 // UNDIRECTED (indicación de la cátedra): GDS guarda cada relación en los dos
@@ -41,7 +24,7 @@ YIELD graphName, nodeCount, relationshipCount, projectMillis
 RETURN graphName, nodeCount, relationshipCount, projectMillis;
 
 // ---------------------------------------------------------------------
-// 1.2 Intermediación (betweenness) con muestreo — top 10
+// Ejercicio 1.2 — Cálculo de betweenness
 // ---------------------------------------------------------------------
 // @paso 1.2_betweenness_top10
 CALL gds.betweenness.stream('califW', {samplingSize: 1000, samplingSeed: 42, concurrency: 1})
@@ -54,7 +37,7 @@ ORDER BY betweenness DESC, nodo ASC
 LIMIT 10;
 
 // ---------------------------------------------------------------------
-// 1.3 Comunidades con Label Propagation (ponderado por rating)
+// Ejercicio 1.3 — Comunidades con Label Propagation
 // ---------------------------------------------------------------------
 // @paso 1.3a_lpa_stats
 // concurrency 1: LPA no acepta semilla y, con un solo hilo, el resultado es reproducible.
@@ -82,7 +65,7 @@ RETURN size(comunidades) AS totalComunidades,
 ORDER BY puesto;
 
 // ---------------------------------------------------------------------
-// 1.4 Similitud entre pares con KNN sobre un embedding de los usuarios
+// Ejercicio 1.4 — KNN sobre embedding de usuarios
 // ---------------------------------------------------------------------
 // @paso 1.4a_fastrp_embedding_usuarios
 // Embedding FastRP (dim 128, semilla 42, ponderado por rating) agregado a la proyección (mutate).
@@ -120,7 +103,7 @@ ORDER BY similitud DESC, usuario1 ASC, usuario2 ASC
 LIMIT 10;
 
 // ---------------------------------------------------------------------
-// 1.5 Betweenness (punto 1.2) en modos stream, stats y write
+// Ejercicio 1.5 — Betweenness en stream, stats y write
 // ---------------------------------------------------------------------
 // @paso 1.5a_betweenness_stream
 CALL gds.betweenness.stream('califW', {samplingSize: 1000, samplingSeed: 42, concurrency: 1})

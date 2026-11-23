@@ -1,17 +1,3 @@
-// =====================================================================
-// TP2 — Bases de Datos Orientadas a Grafos (UCA, 2.º cuatrimestre 2026)
-// Trabajo 2 — Eje Drama — Adell, Giannice, Mazzola
-// EJERCICIO 3 — Embeddings (node2vec) y predicción de enlaces [:RATED]
-// (El punto 3.4, PairRE, está en el notebook src/notebooks/ej3_4_pairre.ipynb.)
-//
-// Se ejecuta en la app Query (pegar el archivo completo) o con el runner:
-//   python -m src.tp2.run_cypher src/cypher/03_ejercicio3.cypher
-// Reejecutable: arranca liberando modelo, pipeline y proyecciones.
-// Factibilidad (NOTAS): dimensión 128, node2vec con parámetros moderados y
-// entrenamiento acotado a películas con al menos 20 calificaciones.
-// Semilla 42 (randomSeed) y concurrency 1 donde hace falta para reproducir.
-// =====================================================================
-
 // @paso 3.0a_limpiar_modelo
 CALL gds.model.drop('modeloLP_drama', false) YIELD modelName
 RETURN modelName AS modeloLiberado;
@@ -40,7 +26,7 @@ YIELD graphName, nodeCount, relationshipCount
 RETURN graphName, nodeCount, relationshipCount;
 
 // ---------------------------------------------------------------------
-// 3.1 Embedding de nodo con node2vec (ponderado) — vector de 5 nodos
+// Ejercicio 3.1 — Embedding con node2vec
 // ---------------------------------------------------------------------
 // @paso 3.1_node2vec_5_nodos
 // 5 nodos elegidos de forma determinista: la película ancla, la película más
@@ -86,7 +72,7 @@ RETURN labels(n)[0] AS tipo,
 ORDER BY tipo ASC, nodo ASC;
 
 // ---------------------------------------------------------------------
-// 3.2 Objetivo: nuevas [:RATED] usuario→película (subgrafo de entrenamiento)
+// Ejercicio 3.2 — Subgrafo de entrenamiento
 // ---------------------------------------------------------------------
 // @paso 3.2a_subgrafo_entrenamiento
 // Proyección Cypher acotada (NOTAS) a las películas con >= 20 calificaciones.
@@ -114,7 +100,7 @@ RETURN count(DISTINCT u) AS usuarios,
        count(r) AS relacionesRated;
 
 // ---------------------------------------------------------------------
-// 3.3 Pipeline de predicción de enlaces con el embedding como feature
+// Ejercicio 3.3 — Pipeline de link prediction
 // ---------------------------------------------------------------------
 // @paso 3.3a_pipeline_crear
 CALL gds.beta.pipeline.linkPrediction.create('pipeLP_drama') YIELD name

@@ -1,20 +1,3 @@
-// =====================================================================
-// TP2 — Bases de Datos Orientadas a Grafos (UCA, 2.º cuatrimestre 2026)
-// Trabajo 2 — Eje Drama — Adell, Giannice, Mazzola
-// EJERCICIO 2 — Índices, planes de ejecución y escritura por lotes
-//
-// Se ejecuta en la app Query (pegar el archivo completo, EN ORDEN: el estado
-// del índice importa) o con el runner:
-//   python -m src.tp2.run_cypher src/cypher/02_ejercicio2.cypher
-// Con el runner, los pasos marcados medir=20 hacen 1 corrida de calentamiento y
-// 20 medidas; se informa la mediana del tiempo total (available + consumed, en ms)
-// y la mediana del tiempo de los operadores informado por PROFILE.
-// Reejecutable: arranca borrando los índices sobre Movie(year) y ratingNorm.
-//
-// OJO: el dump recommendations-50 YA TRAE un índice RANGE sobre Movie(year)
-// (index_fc5f831e). Para medir "sin el índice específico" hay que borrarlo.
-// =====================================================================
-
 // @paso 2.0a_borrar_indice_del_dump
 DROP INDEX index_fc5f831e IF EXISTS;
 
@@ -33,7 +16,7 @@ MATCH ()-[r:RATED]->() WHERE r.ratingNorm IS NOT NULL
 CALL (r) { REMOVE r.ratingNorm } IN TRANSACTIONS OF 10000 ROWS;
 
 // ---------------------------------------------------------------------
-// 2.1 Línea base: PROFILE de un rango de años SIN el índice específico
+// Ejercicio 2.1 — PROFILE sin índice
 // ---------------------------------------------------------------------
 // @paso 2.1_profile_sin_indice medir=20
 PROFILE
@@ -42,7 +25,7 @@ WHERE m.year >= 1990 AND m.year <= 1999
 RETURN count(m) AS peliculas;
 
 // ---------------------------------------------------------------------
-// 2.2 Índice de RANGO sobre Movie.year y la misma consulta
+// Ejercicio 2.2 — Índice de rango y nuevo PROFILE
 // ---------------------------------------------------------------------
 // @paso 2.2a_crear_indice_rango
 CREATE RANGE INDEX movie_year_range IF NOT EXISTS FOR (m:Movie) ON (m.year);
@@ -62,7 +45,7 @@ WHERE m.year >= 1990 AND m.year <= 1999
 RETURN count(m) AS peliculas;
 
 // ---------------------------------------------------------------------
-// 2.3 EXPLAIN (plan sin ejecutar) y PROFILE: runtime y operador Eager
+// Ejercicio 2.3 — EXPLAIN, runtime y Eager
 // ---------------------------------------------------------------------
 // @paso 2.3a_explain_rango
 EXPLAIN
@@ -88,7 +71,7 @@ CALL (u) {
 } IN TRANSACTIONS OF 50 ROWS;
 
 // ---------------------------------------------------------------------
-// 2.4 Escritura por lotes: ratingNorm = rating − promedio del usuario
+// Ejercicio 2.4 — Escritura por lotes de ratingNorm
 // ---------------------------------------------------------------------
 // @paso 2.4a_escritura_ratingNorm
 // Un lote = 50 usuarios (cada uno con todas sus calificaciones), así cada

@@ -1,15 +1,6 @@
-// =====================================================================
-// TP2 — Bases de Datos Orientadas a Grafos (UCA, 2.º cuatrimestre 2026)
-// Trabajo 2 — Eje Drama — Adell, Giannice, Mazzola
-// PARTE COMÚN — Síntesis: panorama del grafo y recomendación base (sin GDS)
-//
-// Se ejecuta en la app Query (pegar el archivo completo) o con el runner:
-//   python -m src.tp2.run_cypher src/cypher/00_parte_comun.cypher
-// Es de solo lectura: no crea nada, así que no necesita limpieza previa.
-// Película ancla: la de género «Drama» con más [:RATED] (desempate por
-// título). Se calcula en cada consulta; nunca va hardcodeada.
-// =====================================================================
-
+// ---------------------------------------------------------------------
+// Común 1 — Panorama del grafo
+// ---------------------------------------------------------------------
 // @paso C.1a_nodos_por_etiqueta
 // Panorama (1/4): nodos por etiqueta. Un nodo :Person:Actor cuenta en las dos.
 MATCH (n)
@@ -44,6 +35,9 @@ RETURN m.title AS pelicula, m.year AS anio, count(r) AS calificaciones
 ORDER BY calificaciones DESC, pelicula ASC
 LIMIT 3;
 
+// ---------------------------------------------------------------------
+// Común 2 — Recomendación base
+// ---------------------------------------------------------------------
 // @paso C.5_pelicula_ancla
 // Película ancla del eje Drama.
 MATCH (:Genre {name: 'Drama'})<-[:IN_GENRE]-(m:Movie)

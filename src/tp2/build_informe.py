@@ -47,7 +47,7 @@ CAPTURAS = RAIZ / "outputs" / "capturas"
 PLANES = RAIZ / "outputs" / "planes"
 PDF_FINAL = SALIDA / "TP2_Trabajo2_informe.pdf"
 
-MARCADOR = re.compile(r"\{\{(tabla|valor|json|cociente|plan|captura|imagen):([^}]*)\}\}")
+MARCADOR = re.compile(r"\{\{(tabla|valor|json|cociente|plan|captura|imagen|vectores):([^}]*)\}\}")
 
 
 # LaTeX básico: sin fuentes del sistema (sirve con pdflatex, xelatex y tectonic).
@@ -134,11 +134,38 @@ def tabla(spec: str) -> str:
     titulos = [t for t in ops.get("titulos", "").split(",") if t] or cols
     n = int(ops.get("n", len(filas)))
     crudas = set(ops.get("crudas", "").split(","))  # columnas sin formato (p. ej. años)
-    lineas = ["| " + " | ".join(titulos) + " |", "|" + "|".join("---" for _ in cols) + "|"]
-    for f in filas[:n]:
+    var = ops.get("var")  # var=v agrega una columna con la referencia v_1, v_2, ... (ver {{vectores}})
+    if var:
+        titulos = titulos + [ops.get("vartitulo", "Vector")]
+    lineas = ["| " + " | ".join(titulos) + " |", "|" + "|".join("---" for _ in titulos) + "|"]
+    for i, f in enumerate(filas[:n], 1):
         celdas = [(f.get(c, "") if c in crudas else formatear(f.get(c, ""), ops)).replace("|", "\\|")
                   for c in cols]
+        if var:
+            celdas.append(rf"$\mathbf{{{var}}}_{{{i}}}$")
         lineas.append("| " + " | ".join(celdas) + " |")
+    return "\n".join(lineas)
+
+
+def vectores(spec: str) -> str:
+    """{{vectores:<script>/<id>;col=embedding;etiqueta=nodo;var=v;dec=3}}
+
+    Lista los vectores completos, en letra chica, con la misma referencia v_1, v_2, ... que la
+    columna que agrega {{tabla:...;var=v}} (mismo orden de filas que el CSV).
+    """
+    objetivo, ops = opciones(spec)
+    filas = leer_csv(objetivo)
+    dec, col, et, var = int(ops.get("dec", 3)), ops.get("col", "embedding"), ops.get("etiqueta", "nodo"), ops.get("var", "v")
+    lineas = [r"\begin{footnotesize}\sloppy"]
+    for i, f in enumerate(filas, 1):
+        v = json.loads(f[col])
+        nombre = f[et]
+        for a, b in (("\\", r"\textbackslash{}"), ("&", r"\&"), ("%", r"\%"), ("$", r"\$"), ("#", r"\#"),
+                     ("_", r"\_"), ("{", r"\{"), ("}", r"\}")):
+            nombre = nombre.replace(a, b)
+        nums = "; ".join(num_es(float(x), dec) for x in v)
+        lineas.append(rf"\noindent$\mathbf{{{var}}}_{{{i}}}$ ({nombre}, dim {len(v)}) $=$ [{nums}]\par\smallskip")
+    lineas.append(r"\end{footnotesize}")
     return "\n".join(lineas)
 
 
@@ -279,6 +306,8 @@ def main(argv: list[str] | None = None) -> int:
                     return valor_json(spec)
                 if tipo == "cociente":
                     return cociente(spec)
+                if tipo == "vectores":
+                    return vectores(spec)
                 if tipo == "plan":
                     return plan(spec, imgs)
                 if tipo == "captura":

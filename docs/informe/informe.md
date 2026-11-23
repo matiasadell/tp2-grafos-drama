@@ -111,9 +111,11 @@ Verificación: todas las `[:RATED]` quedaron normalizadas y el promedio de `rati
 
 ## Ejercicio 3 — Embeddings, predicción de enlaces y PairRE
 
-**3.1 node2vec sobre `califW`.** Configuración: dimensión 128, `walkLength` 40, `walksPerNode` 10, una iteración, caminatas sesgadas por el peso `rating`, semilla 42 y `concurrency` 1. Se muestran 5 nodos (la ancla, la película más calificada que no es la ancla y los 3 usuarios más activos), con las primeras 6 de sus **{{valor:03_ejercicio3/3.1_node2vec_5_nodos;col=dimension}} componentes**:
+**3.1 node2vec sobre `califW`.** Configuración: dimensión 128, `walkLength` 40, `walksPerNode` 10, una iteración, caminatas sesgadas por el peso `rating`, semilla 42 y `concurrency` 1. Se muestran 5 nodos (la ancla, la película más calificada que no es la ancla y los 3 usuarios más activos). Cada vector tiene **{{valor:03_ejercicio3/3.1_node2vec_5_nodos;col=dimension}} componentes** y se referencia con una variable $\mathbf{v}_i$; debajo de la tabla están los vectores completos (3 decimales):
 
-{{tabla:03_ejercicio3/3.1_node2vec_5_nodos;cols=tipo,nodo,dimension,embedding;titulos=Tipo,Nodo,Dim.,Embedding (primeras 6 componentes);dec=3;vec=6}}
+{{tabla:03_ejercicio3/3.1_node2vec_5_nodos;cols=tipo,nodo,dimension;titulos=Tipo,Nodo,Dimensión;var=v;vartitulo=Vector}}
+
+{{vectores:03_ejercicio3/3.1_node2vec_5_nodos;col=embedding;etiqueta=nodo;var=v;dec=3}}
 
 **3.2 Objetivo y subgrafo de entrenamiento.** Se predicen nuevas `[:RATED]` usuario→película. El subgrafo se acotó, según las NOTAS, a las películas con al menos 20 calificaciones (proyección Cypher `califLP`): **{{valor:03_ejercicio3/3.2a_subgrafo_entrenamiento;col=nodeCount}} nodos** ({{valor:03_ejercicio3/3.2b_subgrafo_conteo_en_la_base;col=usuarios}} usuarios y {{valor:03_ejercicio3/3.2b_subgrafo_conteo_en_la_base;col=peliculas}} películas) y **{{valor:03_ejercicio3/3.2b_subgrafo_conteo_en_la_base;col=relacionesRated}} relaciones `[:RATED]`**. GDS informa {{valor:03_ejercicio3/3.2a_subgrafo_entrenamiento;col=relationshipCount}}, porque cada arista no dirigida cuenta dos veces.
 

@@ -21,9 +21,7 @@ header-includes:
 
 **Panorama.** El grafo tiene **{{valor:00_parte_comun/C.3_totales;col=nodos}} nodos y {{valor:00_parte_comun/C.3_totales;col=relaciones}} relaciones**, que coinciden con la consigna: {{valor:00_parte_comun/C.3_totales;col=coincideConConsigna}}. Una `:Person` puede ser `:Actor` y `:Director` a la vez (487 lo son), por eso las etiquetas suman más que el total.
 
-{{tabla:00_parte_comun/C.1a_nodos_por_etiqueta;cols=etiqueta,nodos;titulos=Etiqueta,Nodos}}
-
-{{tabla:00_parte_comun/C.2_relaciones_por_tipo;cols=tipo,relaciones;titulos=Tipo de relación,Relaciones}}
+{{lado:00_parte_comun/C.1a_nodos_por_etiqueta;cols=etiqueta,nodos;titulos=Etiqueta,Nodos||00_parte_comun/C.2_relaciones_por_tipo;cols=tipo,relaciones;titulos=Tipo de relación,Relaciones}}
 
 **Las 3 películas con más calificaciones:**
 
@@ -57,11 +55,13 @@ Las similitudes son muy altas (cerca de 0,997). FastRP promedia vecindarios y, e
 
 **1.5 Betweenness en los modos stream, stats y write.** Se usaron los mismos parámetros que en el 1.2. El modo **write persiste la propiedad de nodo `betweenness`** en {{valor:01_ejercicio1/1.5c_betweenness_write;col=nodePropertiesWritten}} nodos. La verificación en la base coincide con el top del modo stream.
 
-{{captura:1.5a_betweenness_stream;ancho=0.85;titulo=1.5 — modo stream|01_ejercicio1/1.5a_betweenness_stream;cols=tipo,nodo,betweenness;titulos=Tipo,Nodo,Betweenness (stream);dec=0;n=5}}
+{{captura:1.5a_betweenness_stream;ancho=pagina;titulo=1.5 — modo stream|01_ejercicio1/1.5a_betweenness_stream;cols=tipo,nodo,betweenness;titulos=Tipo,Nodo,Betweenness (stream);dec=0;n=5}}
 
-{{captura:1.5b_betweenness_stats;ancho=0.85;titulo=1.5 — modo stats|01_ejercicio1/1.5b_betweenness_stats;cols=centralityDistribution,computeMillis;titulos=Distribución (stats),computeMillis;claves=min,mean,p50,p99,max;dec=1}}
+{{captura:1.5b_betweenness_stats;ancho=pagina;titulo=1.5 — modo stats|01_ejercicio1/1.5b_betweenness_stats;cols=centralityDistribution,computeMillis;titulos=Distribución (stats),computeMillis;claves=min,mean,p50,p99,max;dec=1}}
 
-{{captura:1.5c_betweenness_write;ancho=0.85;titulo=1.5 — modo write|01_ejercicio1/1.5c_betweenness_write;cols=propiedadEscrita,nodePropertiesWritten,computeMillis,writeMillis;titulos=Propiedad escrita,nodePropertiesWritten,computeMillis,writeMillis}}
+{{captura:1.5c_betweenness_write;ancho=pagina;titulo=1.5 — modo write|01_ejercicio1/1.5c_betweenness_write;cols=propiedadEscrita,nodePropertiesWritten,computeMillis,writeMillis;titulos=Propiedad escrita,nodePropertiesWritten,computeMillis,writeMillis}}
+
+\newpage
 
 ## Ejercicio 2 — Índices, planes y escritura por lotes
 

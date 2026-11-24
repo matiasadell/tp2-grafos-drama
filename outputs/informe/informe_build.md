@@ -21,21 +21,35 @@ header-includes:
 
 **Panorama.** El grafo tiene **28.863 nodos y 166.261 relaciones**, que coinciden con la consigna: sí. Una `:Person` puede ser `:Actor` y `:Director` a la vez (487 lo son), por eso las etiquetas suman más que el total.
 
-| Etiqueta | Nodos |
-|---|---|
-| Person | 19.047 |
-| Actor | 15.443 |
-| Movie | 9.125 |
-| Director | 4.091 |
-| User | 671 |
-| Genre | 20 |
-
-| Tipo de relación | Relaciones |
-|---|---|
-| RATED | 100.004 |
-| ACTED_IN | 35.910 |
-| IN_GENRE | 20.340 |
-| DIRECTED | 10.007 |
+```{=latex}
+\begin{minipage}[t]{0.44\textwidth}\centering
+\begin{tabular}[t]{ll}
+\toprule
+Etiqueta & Nodos \\
+\midrule
+Person & 19.047 \\
+Actor & 15.443 \\
+Movie & 9.125 \\
+Director & 4.091 \\
+User & 671 \\
+Genre & 20 \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.44\textwidth}\centering
+\begin{tabular}[t]{ll}
+\toprule
+Tipo de relación & Relaciones \\
+\midrule
+RATED & 100.004 \\
+ACTED\_IN & 35.910 \\
+IN\_GENRE & 20.340 \\
+DIRECTED & 10.007 \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+```
 
 **Las 3 películas con más calificaciones:**
 
@@ -101,11 +115,13 @@ Las similitudes son muy altas (cerca de 0,997). FastRP promedia vecindarios y, e
 
 **1.5 Betweenness en los modos stream, stats y write.** Se usaron los mismos parámetros que en el 1.2. El modo **write persiste la propiedad de nodo `betweenness`** en 9.796 nodos. La verificación en la base coincide con el top del modo stream.
 
-![1.5 — modo stream](img01.png){width=7.1cm}
+![1.5 — modo stream](img01.png){width=100%}
 
-![1.5 — modo stats](img02.png){width=10.2cm}
+![1.5 — modo stats](img02.png){width=100%}
 
-![1.5 — modo write](img03.png){width=8.7cm}
+![1.5 — modo write](img03.png){width=100%}
+
+\newpage
 
 ## Ejercicio 2 — Índices, planes y escritura por lotes
 

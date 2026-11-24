@@ -18,9 +18,12 @@ Marcadores que reemplaza (cada uno en su propia línea, salvo {{valor}} y {{json
       si no, el render de respaldo outputs/planes/<id>.png, marcado como tal.
   {{captura:<id>;ancho=0.9;titulo=...|<especificación de tabla de respaldo>}}
       Captura del grupo si existe; si no, la tabla de respaldo (mismo formato que {{tabla:...}}).
+  {{cypher:<script>/<paso>;fontsize=footnotesize}}
+      Sentencia del paso `// @paso <paso>` de src/cypher/<script>.cypher, resaltada con minted
+      (sin los comentarios de línea completa que la preceden).
   {{imagen:<ruta relativa a la raíz>;ancho=0.6;titulo=...}}
 
-Compila con pandoc + xelatex en una carpeta temporal con ruta ASCII (la ruta del proyecto
+Compila con pandoc + xelatex (o tectonic, con --motor tectonic) en una carpeta temporal con ruta ASCII (la ruta del proyecto
 tiene espacios y 'ñ', que LaTeX no maneja bien) y verifica que el PDF tenga <= 8 páginas.
 
 Uso: python -m src.tp2.build_informe [--max-paginas 8]
@@ -34,11 +37,13 @@ import re
 import shutil
 import subprocess
 import sys
+import os
 import tempfile
 from pathlib import Path
 from typing import Any
 
 from .conexion import RAIZ
+from .run_cypher import parsear
 
 FUENTE = RAIZ / "docs" / "informe" / "informe.md"
 SALIDA = RAIZ / "outputs" / "informe"
@@ -47,12 +52,14 @@ CAPTURAS = RAIZ / "outputs" / "capturas"
 PLANES = RAIZ / "outputs" / "planes"
 PDF_FINAL = SALIDA / "TP2_Trabajo2_informe.pdf"
 
-MARCADOR = re.compile(r"\{\{(tabla|valor|json|cociente|plan|captura|imagen|vectores):([^}]*)\}\}")
+MARCADOR = re.compile(r"\{\{(tabla|valor|json|cociente|plan|captura|imagen|vectores|cypher|lado):([^}]*)\}\}")
 
 
 # LaTeX básico: sin fuentes del sistema (sirve con pdflatex, xelatex y tectonic).
 # Solo se declaran los pocos símbolos Unicode que el texto usa y LaTeX no trae en modo texto.
 CABECERA = r"""
+\usepackage{float}
+\floatplacement{figure}{H}
 \usepackage{iftex}
 \ifPDFTeX
   \DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
@@ -66,6 +73,11 @@ CABECERA = r"""
 \fi
 """
 
+
+CABECERA_MINTED = r"""
+\usepackage{minted}
+\setminted{fontsize=\footnotesize, breaklines, frame=lines, framesep=2mm, baselinestretch=1}
+"""
 
 CM_POR_PX = 0.011     # escala común de las capturas en el PDF
 ANCHO_MAX_CM = 17.5   # ancho útil de la página (A4/Letter con márgenes de 1,7 cm)
@@ -145,6 +157,45 @@ def tabla(spec: str) -> str:
             celdas.append(rf"$\mathbf{{{var}}}_{{{i}}}$")
         lineas.append("| " + " | ".join(celdas) + " |")
     return "\n".join(lineas)
+
+
+def tablas_lado_a_lado(spec: str) -> str:
+    """{{lado:<script>/<id>;cols=..;titulos=..||<script>/<id>;cols=..;titulos=..}}
+
+    Dos tablas chicas una al lado de la otra (LaTeX crudo, mismo estilo booktabs que {{tabla}}).
+    Cada mitad acepta las mismas opciones de {{tabla}} (cols, titulos, dec, crudas, n).
+    """
+    escapes = (("\\", r"\textbackslash{}"), ("&", r"\&"), ("%", r"\%"), ("$", r"\$"), ("#", r"\#"),
+               ("_", r"\_"), ("{", r"\{"), ("}", r"\}"))
+
+    def esc(s: str) -> str:
+        for a, b in escapes:
+            s = s.replace(a, b)
+        return s
+
+    def una(mitad: str) -> str:
+        objetivo, ops = opciones(mitad)
+        filas = leer_csv(objetivo)
+        cols = [c for c in ops.get("cols", "").split(",") if c] or (list(filas[0]) if filas else [])
+        titulos = [t for t in ops.get("titulos", "").split(",") if t] or cols
+        crudas = set(ops.get("crudas", "").split(","))
+        n = int(ops.get("n", len(filas)))
+        cuerpo = [" & ".join(esc(f.get(c, "") if c in crudas else formatear(f.get(c, ""), ops)) for c in cols)
+                  + r" \\" for f in filas[:n]]
+        return "\n".join([
+            r"\begin{minipage}[t]{0.44\textwidth}\centering",
+            r"\begin{tabular}[t]{" + "l" * len(cols) + "}",
+            r"\toprule",
+            " & ".join(esc(t) for t in titulos) + r" \\",
+            r"\midrule",
+            *cuerpo,
+            r"\bottomrule",
+            r"\end{tabular}",
+            r"\end{minipage}",
+        ])
+
+    izquierda, derecha = (una(m) for m in spec.split("||", 1))
+    return "```{=latex}\n" + izquierda + "\n\\hfill\n" + derecha + "\n```"
 
 
 def vectores(spec: str) -> str:
@@ -230,6 +281,8 @@ class Imagenes:
         self.n += 1
         nombre = f"img{self.n:02d}{origen.suffix.lower()}"
         shutil.copy(origen, self.destino / nombre)
+        if ancho == "pagina":  # ancho=pagina: ocupa todo el ancho útil, sin importar los píxeles
+            return f"![{titulo}]({nombre}){{width=100%}}"
         try:
             from PIL import Image
             with Image.open(origen) as im:
@@ -274,6 +327,37 @@ def imagen(spec: str, imgs: Imagenes) -> str:
     return imgs.agregar(origen, ops.get("ancho", "0.6"), ops.get("titulo", ""))
 
 
+def cypher(spec: str) -> str:
+    """Sentencia de un paso de src/cypher/<script>.cypher como bloque minted (LaTeX crudo)."""
+    objetivo, ops = opciones(spec)
+    script, _, paso = objetivo.partition("/")
+    ruta = RAIZ / "src" / "cypher" / f"{script}.cypher"
+    if not ruta.exists():
+        raise Faltante(f"no existe {ruta.relative_to(RAIZ)}")
+    pasos = {p["id"]: p for p in parsear(ruta.read_text(encoding="utf-8"))}
+    if paso not in pasos:
+        raise Faltante(f"no hay un '// @paso {paso}' en {ruta.name}")
+    lineas = pasos[paso]["sentencia"].splitlines()
+    while lineas and lineas[0].strip().startswith("//"):
+        lineas.pop(0)
+    opcion = "[fontsize=\\" + ops["fontsize"] + "]" if "fontsize" in ops else ""
+    codigo = "\n".join(lineas) + ";"
+    return "```{=latex}\n\\begin{minted}" + opcion + "{cypher}\n" + codigo + "\n\\end{minted}\n```"
+
+
+def entorno_con_herramientas() -> dict[str, str]:
+    """PATH ampliado con las carpetas de pygmentize (lo invoca minted), pypandoc y tectonic, si existen."""
+    base = Path(sys.executable).parent
+    candidatas = [
+        base / "Scripts",
+        base / "Lib" / "site-packages" / "pypandoc" / "files",
+        Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "tectonic",
+    ]
+    env = dict(os.environ)
+    env["PATH"] = os.pathsep.join([env.get("PATH", ""), *[str(c) for c in candidatas if c.is_dir()]])
+    return env
+
+
 def contar_paginas(pdf: Path) -> int:
     from pypdf import PdfReader
 
@@ -300,6 +384,8 @@ def main(argv: list[str] | None = None) -> int:
             try:
                 if tipo == "tabla":
                     return tabla(spec)
+                if tipo == "lado":
+                    return tablas_lado_a_lado(spec)
                 if tipo == "valor":
                     return valor(spec)
                 if tipo == "json":
@@ -308,6 +394,8 @@ def main(argv: list[str] | None = None) -> int:
                     return cociente(spec)
                 if tipo == "vectores":
                     return vectores(spec)
+                if tipo == "cypher":
+                    return cypher(spec)
                 if tipo == "plan":
                     return plan(spec, imgs)
                 if tipo == "captura":
@@ -325,7 +413,8 @@ def main(argv: list[str] | None = None) -> int:
             print("Marcadores sin resolver:", *faltantes, sep="\n  ", file=sys.stderr)
             return 1
 
-        (build / "cabecera.tex").write_text(CABECERA, encoding="utf-8")
+        usa_minted = "\\begin{minted}" in resultado
+        (build / "cabecera.tex").write_text(CABECERA + (CABECERA_MINTED if usa_minted else ""), encoding="utf-8")
         variables = [
             "-H", "cabecera.tex",
             "-V", "geometry:margin=1.7cm",
@@ -346,7 +435,13 @@ def main(argv: list[str] | None = None) -> int:
             for f in build.glob("img*.png"):
                 shutil.copy(f, destino_tex / f.name)
         cmd = ["pandoc", "informe.md", "-o", "informe.pdf", f"--pdf-engine={args.motor}", *variables]
-        proc = subprocess.run(cmd, cwd=build, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        if usa_minted:  # minted ejecuta pygmentize: el motor necesita shell-escape
+            if "tectonic" in args.motor:
+                cmd += ["--pdf-engine-opt=-Z", "--pdf-engine-opt=shell-escape"]
+            else:
+                cmd += ["--pdf-engine-opt=-shell-escape"]
+        proc = subprocess.run(cmd, cwd=build, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                              env=entorno_con_herramientas())
         if proc.returncode != 0:
             print(proc.stderr, file=sys.stderr)
             return proc.returncode
